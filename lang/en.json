@@ -1,6 +1,14 @@
 {
   "QJPC.settings.removeGMSecrets.name": "Remove GM Secrets",
   "QJPC.settings.removeGMSecrets.hint": "Remove secret sections from exported journal text",
+  "QJPC.settings.returnHTMLtext.name": "HMTL text",
+  "QJPC.settings.returnHTMLtext.hint": "Returns the HTML Foundry saves and seen in the editor instead of plain text.",
+  "QJPC.settings.isCuratedText.name":"Curated Text",
+  "QJPC.settings.isCuratedText.hint":"Returns curated text. This means styling with spaces will be trimmed down.",
+  "QJPC.settings.isEmptyLineText.name":"Remove empty lines",
+  "QJPC.settings.isEmptyLineText.hint":"Removes any empty lines in the text. If you want to keep them for styling do not use this option.",
+  "QJPC.settings.isPageTitle.name": "Include Page Title.",
+  "QJPC.settings.isPageTitle.hint": "This will add the page title to the exported text.",
   "QJPC.controls.clipboard.label": "Clipboard",
   "QJPC.notifications.copied": "Text copied to clipboard.",
   "QJPC.notifications.unsupported": "Non supported page type."

@@ -3,3 +3,5 @@
 
 A little module to easily copy your Journal conten (from multipage or single page) to the clipboard.
 You find the menü entry in the control panel (three point button in the header of the journal).
+
+In the settings you can adjust and also switch to a HTML export.

@@ -1,6 +1,14 @@
 {
   "QJPC.settings.removeGMSecrets.name": "Entferne die Spielleiterhinweise",
   "QJPC.settings.removeGMSecrets.hint": "Dies entfernt die Spielleiter Hinweise/Geheimnisse vor dem Export.",
+  "QJPC.settings.returnHTMLtext.name": "HTML Text",
+  "QJPC.settings.returnHTMLtext.hint": "Liefert das HTML das von Foundry gespeichert und im editor bearbeitet werden kann statt nur Text.",
+  "QJPC.settings.isCuratedText.name":"Angepasster Text",
+  "QJPC.settings.isCuratedText.hint":"Liefert angepassten Text. Das heißt dass Leerzeichen die zum Styling benutzt wurden auch entfernt wurden.",
+  "QJPC.settings.isEmptyLineText.name":"Entferne Leerzeilen",
+  "QJPC.settings.isEmptyLineText.hint":"Entfernt Leerzeilen aus dem Text. Falls Leerzeilen gewünscht sind um den Text zu strukturieren, sollte diese Option hier nicht genutzt werden.",
+  "QJPC.settings.isPageTitle.name": "Seitentitel einfügen",
+  "QJPC.settings.isPageTitle.hint": "Dies fügt den Seitentitel an den Anfang des exportierten Textes hinzu.",
   "QJPC.controls.clipboard.label": "Zwischenablage",
   "QJPC.notifications.copied": "Text in die Zwischenablage kopiert.",
   "QJPC.notifications.unsupported": "Nicht unterstützer Seitentyp!"
