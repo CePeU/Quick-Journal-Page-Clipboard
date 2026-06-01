@@ -9,9 +9,12 @@
 ### Fixed
 - Multipage exports should now ignore non text exports
 ### Changed
+- Version bump
 ### Removed
 ### Deprecated
 ### Security
+### BUG
+Potentially header tags (H tags) might not be exported - need to take a look
 
 ## [1.0.0] / 2026-05-31
 ### Added

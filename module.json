@@ -2,7 +2,7 @@
   "id": "quick-journal-page-clipboard",
   "title": "Quick-Journal-Page-Clipboard",
   "description": "Adds an option to quickly paste all Journal content to the clipboard as text. Copies the currently viewed text (single or multi-page) directly to the clipboard.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "library": false,
   "compatibility": {
     "minimum": "13",
