@@ -1,0 +1,34 @@
+{
+  "id": "quick-journal-page-clipboard",
+  "title": "Quick-Journal-Page-Clipboard",
+  "description": "Adds an option to quickly paste all Journal content to the clipboard as text. Copies the currently viewed text (single or multi-page) directly to the clipboard.",
+  "version": "1.0.0",
+  "library": false,
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14",
+    "maximum": "14"
+  },
+  "authors": [
+    {
+      "name": "CePeU",
+      "discord": "CePeU",
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "scripts/quick-journal-page-clipboard.js"
+  ],
+    "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
+    }
+  ]
+}

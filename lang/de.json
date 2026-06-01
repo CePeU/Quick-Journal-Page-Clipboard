@@ -1,0 +1,7 @@
+{
+  "QJPC.settings.removeGMSecrets.name": "Entferne die Spielleiterhinweise",
+  "QJPC.settings.removeGMSecrets.hint": "Dies entfernt die Spielleiter Hinweise/Geheimnisse vor dem Export.",
+  "QJPC.controls.clipboard.label": "Zwischenablage",
+  "QJPC.notifications.copied": "Text in die Zwischenablage kopiert.",
+  "QJPC.notifications.unsupported": "Nicht unterstützer Seitentyp!"
+}

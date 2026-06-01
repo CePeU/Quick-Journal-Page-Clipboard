@@ -1,0 +1,7 @@
+{
+  "QJPC.settings.removeGMSecrets.name": "Remove GM Secrets",
+  "QJPC.settings.removeGMSecrets.hint": "Remove secret sections from exported journal text",
+  "QJPC.controls.clipboard.label": "Clipboard",
+  "QJPC.notifications.copied": "Text copied to clipboard.",
+  "QJPC.notifications.unsupported": "Non supported page type."
+}
