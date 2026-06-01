@@ -23,7 +23,7 @@ jobs:
       - name: Zip output
         run: |
           mkdir quick-journal-page-clipboard
-          mkdir quick-journal-page-clipboard
+          mkdir quick-journal-page-clipboard/scripts
           mkdir quick-journal-page-clipboard/styles
           mkdir quick-journal-page-clipboard/lang
           cp module.json ./quick-journal-page-clipboard/
