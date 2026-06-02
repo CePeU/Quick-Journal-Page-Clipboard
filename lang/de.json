@@ -9,7 +9,15 @@
   "QJPC.settings.isEmptyLineText.hint":"Entfernt Leerzeilen aus dem Text. Falls Leerzeilen gewünscht sind um den Text zu strukturieren, sollte diese Option hier nicht genutzt werden.",
   "QJPC.settings.isPageTitle.name": "Seitentitel einfügen",
   "QJPC.settings.isPageTitle.hint": "Dies fügt den Seitentitel an den Anfang des exportierten Textes hinzu.",
+  "QJPC.settings.returnMDtext.name": "Zu Markdown rendern",
+  "QJPC.settings.returnMDtext.hint": "Rendert den Text einer Journal seit zu Markdown bevor es zum Clipboard export kommt.",
   "QJPC.controls.clipboard.label": "Zwischenablage",
   "QJPC.notifications.copied": "Text in die Zwischenablage kopiert.",
-  "QJPC.notifications.unsupported": "Nicht unterstützer Seitentyp!"
+  "QJPC.notifications.unsupported": "Nicht unterstützer Seitentyp!",
+  "QJPC.notifications.noJournalOpen": "Keine geöffnetes oder aktives Journal Fenster.",
+  "QJPC.warning.error": "Fehler beim kopieren in die Zwischenablage.",
+  "QJPC.warning.onlyOneAllowed": "Nur Markdown or HTML darf gleichzeitig Aktiv sein. Zu nur Text Export gewechselt.",
+  "QJPC.settings.plaintext.name": "Nur Text",
+  "QJPC.settings.outputFormat.name": "Ausgabe Format",
+  "QJPC.settings.outputFormat.hint": "Das Ausgabe Formt das in die Zwischenablage gelegt werden soll. Markdown wird durch ein eigenen Renderer gerendert."
 }

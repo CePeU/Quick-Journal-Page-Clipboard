@@ -9,7 +9,15 @@
   "QJPC.settings.isEmptyLineText.hint":"Removes any empty lines in the text. If you want to keep them for styling do not use this option.",
   "QJPC.settings.isPageTitle.name": "Include Page Title.",
   "QJPC.settings.isPageTitle.hint": "This will add the page title to the exported text.",
+  "QJPC.settings.returnMDtext.name": "Render to Markdown",
+  "QJPC.settings.returnMDtext.hint":"Renders the text of a journal page to markdown before clipboard export.",
   "QJPC.controls.clipboard.label": "Clipboard",
   "QJPC.notifications.copied": "Text copied to clipboard.",
-  "QJPC.notifications.unsupported": "Non supported page type."
+  "QJPC.notifications.unsupported": "Non supported page type.",
+  "QJPC.notifications.noJournalOpen": "No currently opened or active journal window.",
+  "QJPC.warning.error": "Error during clipboard copy event.",
+  "QJPC.warning.onlyOneAllowed": "Only Markdown or HTML can be active at the same time. Switched to plain text export.",
+  "QJPC.settings.plaintext.name": "Plain text",
+  "QJPC.settings.outputFormat.name": "Output format",
+  "QJPC.settings.outputFormat.hint": "The output format for the clipboard. Markdown will not be rendered by the Foundry rendere."
 }

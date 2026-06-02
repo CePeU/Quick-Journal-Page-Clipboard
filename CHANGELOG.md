@@ -1,3 +1,17 @@
+## [1.0.2] / 2026-06-02
+### Added
+- Markdown parsing/export
+- Binding a CTRL+ALT+C as key to do a direkt export if a Journal is opened AND on TOP of all Journals (not necessarily focused!)
+### Fixed
+### Changed
+- Version bump
+- settings to drop down
+### Removed
+### Deprecated
+### Security
+### TODO
+Cleanup of comments and commented out code
+
 
 ## [1.0.1] / 2026-06-02
 ### Added

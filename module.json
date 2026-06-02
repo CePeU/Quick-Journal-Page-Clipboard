@@ -2,7 +2,7 @@
   "id": "quick-journal-page-clipboard",
   "title": "Quick-Journal-Page-Clipboard",
   "description": "Adds an option to quickly paste all Journal content to the clipboard as text. Copies the currently viewed text (single or multi-page) directly to the clipboard.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "library": false,
   "compatibility": {
     "minimum": "13",
@@ -17,7 +17,10 @@
     }
   ],
   "esmodules": [
-    "scripts/quick-journal-page-clipboard.js"
+    "scripts/quick-journal-page-clipboard.js",
+    "scripts/render-markdown.js",
+    "scripts/lib/turndown.js",
+    "scripts/lib/turndown-plugin-gfm.js"
   ],
     "languages": [
     {
