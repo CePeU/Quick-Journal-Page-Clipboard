@@ -24,10 +24,12 @@ jobs:
         run: |
           mkdir quick-journal-page-clipboard
           mkdir quick-journal-page-clipboard/scripts
+          mkdir quick-journal-page-clipboard/scripts/lib
           mkdir quick-journal-page-clipboard/styles
           mkdir quick-journal-page-clipboard/lang
           cp module.json ./quick-journal-page-clipboard/
           cp ./scripts/*.js ./quick-journal-page-clipboard/scripts/
+          cp ./scripts/lib/*.js ./quick-journal-page-clipboard/scripts/lib
           cp ./lang/*.json ./quick-journal-page-clipboard/lang/
           zip -r quick-journal-page-clipboard.zip quick-journal-page-clipboard
 
