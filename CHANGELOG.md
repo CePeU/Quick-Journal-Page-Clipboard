@@ -1,3 +1,14 @@
+## [1.0.4] / 2026-06-05
+### Added
+### Fixed
+- markdown export
+### Changed
+- bullte points for markdown are now "-"
+- added direkt download link of manifest to README
+### Removed
+### Deprecated
+### Security
+
 ## [1.0.3] / 2026-06-05
 ### Added
 - Allows for selection limited user rights as export option

@@ -22,7 +22,8 @@ export async function convertHtmlToMarkdown(html) {
         // headingStyle: "atx"  <-- use "###" to indicate heading (whereas setext uses === or --- to underline headings)
         turndownService = new TurndownService({
             headingStyle: "atx",
-            codeBlockStyle: "fenced"
+            codeBlockStyle: "fenced",
+            bulletListMarker: "-"
         });
         // GFM provides supports for strikethrough, tables, taskListItems, highlightedCodeBlock
         //gfm = TurndownPluginGfmService.gfm;

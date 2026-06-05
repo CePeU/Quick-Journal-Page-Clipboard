@@ -10,3 +10,6 @@ and on top of any other applikation.
 In the settings you can adjust switch between plain text, Markdown or HTML export.
 
 Markdown export ist rendered with its own Markdown engine and not with the native Foundry one.
+
+You can manually install the plugin by using this link:
+https://github.com/CePeU/Quick-Journal-Page-Clipboard/releases/latest/download/module.json

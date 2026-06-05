@@ -797,4 +797,4 @@ export var TurndownService = (function () {
 
   return TurndownService;
 
-});
+})();
