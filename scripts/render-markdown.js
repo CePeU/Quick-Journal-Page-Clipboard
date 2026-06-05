@@ -5,6 +5,9 @@ let turndownService;
 
 export async function convertHtmlToMarkdown(html) {
 //https://deepwiki.com/mixmark-io/turndown/1-overview
+// https://github.com/trutohq/turndown-plugin-gfm
+//https://unpkg.com/@truto/turndown-plugin-gfm@1.0.2/lib/index.js
+
 //This was adapted and updated to newer version thanks to the code of Farling
 //https://github.com/farling42/fvtt-export-markdown/tree/master
 

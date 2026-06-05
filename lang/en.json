@@ -19,5 +19,7 @@
   "QJPC.warning.onlyOneAllowed": "Only Markdown or HTML can be active at the same time. Switched to plain text export.",
   "QJPC.settings.plaintext.name": "Plain text",
   "QJPC.settings.outputFormat.name": "Output format",
-  "QJPC.settings.outputFormat.hint": "The output format for the clipboard. Markdown will not be rendered by the Foundry rendere."
+  "QJPC.settings.outputFormat.hint": "The output format for the clipboard. Markdown will not be rendered by the Foundry rendere.",
+  "QJPC.settings.allowLimited.name":"'Limited rights' export",
+  "QJPC.settings.allowLimited.hint": "Allows for the export of pages which have the 'limited' user right flag. Caution! this migth be very system specific."
 }

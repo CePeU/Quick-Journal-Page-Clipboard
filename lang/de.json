@@ -19,5 +19,7 @@
   "QJPC.warning.onlyOneAllowed": "Nur Markdown or HTML darf gleichzeitig Aktiv sein. Zu nur Text Export gewechselt.",
   "QJPC.settings.plaintext.name": "Nur Text",
   "QJPC.settings.outputFormat.name": "Ausgabe Format",
-  "QJPC.settings.outputFormat.hint": "Das Ausgabe Formt das in die Zwischenablage gelegt werden soll. Markdown wird durch ein eigenen Renderer gerendert."
+  "QJPC.settings.outputFormat.hint": "Das Ausgabe Formt das in die Zwischenablage gelegt werden soll. Markdown wird durch ein eigenen Renderer gerendert.",
+  "QJPC.settings.allowLimited.name":"'Beschränkt Berechtigter' Export",
+  "QJPC.settings.allowLimited.hint": "Erlaubt den Export von 'Beschränkt' berechtigten Seiten. Vorsicht! Dies kann sehr systemspezifisch sein."
 }

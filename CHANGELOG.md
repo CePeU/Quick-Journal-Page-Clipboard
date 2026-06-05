@@ -1,3 +1,15 @@
+## [1.0.3] / 2026-06-05
+### Added
+- Allows for selection limited user rights as export option
+### Fixed
+- only pages with at least observer rights are exported
+### Changed
+### Removed
+### Deprecated
+### Security
+### TODO
+Cleanup of comments and commented out code
+
 ## [1.0.2] / 2026-06-02
 ### Added
 - Markdown parsing/export

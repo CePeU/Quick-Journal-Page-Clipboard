@@ -1,11 +1,9 @@
-CONFIG.debug.hooks = true
+//CONFIG.debug.hooks = true
 //console.log("QJPC: Module Quick-Journal-Page-Clippboard has started");
 
 import { convertHtmlToMarkdown } from "./render-markdown.js";
 
 let sheetObject = null;
-
-
 
 Hooks.once("init", () => {
 
@@ -40,6 +38,16 @@ game.settings.register("quick-journal-page-clipboard", "removeGMSecrets", {
     restricted: true
   });
 
+game.settings.register("quick-journal-page-clipboard", "allowExportForLimitedUserRights", {
+    name: game.i18n.localize("QJPC.settings.allowLimited.name"),
+    hint: game.i18n.localize("QJPC.settings.allowLimited.hint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    restricted: true
+  });
+
   game.settings.register("quick-journal-page-clipboard", "isCuratedText", {
     name: game.i18n.localize("QJPC.settings.isCuratedText.name"),
     hint: game.i18n.localize("QJPC.settings.isCuratedText.hint"),
@@ -70,27 +78,6 @@ game.settings.register("quick-journal-page-clipboard", "removeGMSecrets", {
     restricted: false
   });
 
-  /*
-    game.settings.register("quick-journal-page-clipboard", "returnMDtext", {
-    name: game.i18n.localize("QJPC.settings.returnMDtext.name"),
-    hint: game.i18n.localize("QJPC.settings.returnMDtext.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: false
-  });
-
-  game.settings.register("quick-journal-page-clipboard", "returnHTMLtext", {
-    name: game.i18n.localize("QJPC.settings.returnHTMLtext.name"),
-    hint: game.i18n.localize("QJPC.settings.returnHTMLtext.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: false
-  });*/
-
 game.settings.register("quick-journal-page-clipboard", "outputFormat", {
   name: game.i18n.localize("QJPC.settings.outputFormat.name"),
   hint: game.i18n.localize("QJPC.settings.outputFormat.hint"),
@@ -107,49 +94,46 @@ game.settings.register("quick-journal-page-clipboard", "outputFormat", {
 });
 
 
-
   game.keybindings.register("quick-journal-page-clipboard", "showNotification", {
-  name: "My Settings Keybinding",
-  hint: "A description of what will occur when the Keybinding is executed.",
+  name: "Copy to clipboard",
+  hint: "The keybinding will copy the text of the currently visible page or multipage to the clipboard. Journal/Page needs to be the topmost window.",
   editable: [
     {
       key: "KeyC",
       modifiers: ["Control","Alt"]
     }
   ],
-onDown: async () => { 
+  restricted: false,             // Restrict this Keybinding to gamemaster only?
+  onDown: async () => { 
 
   // Check if a journal sheet is currently open and on TOP (not focused) - this does not allways play any role as sheetObject can be filled allready
   // but it will irritate the user if he can fill the clipboard anyway if no journal is open
     if(!sheetObject) {
     ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
     return;
-  }
+    }
+    const isAJournalCurrentlyActive = getAbsoluteTopJournal();
 
+    //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
+    // Only go on if there is a journal currently opened and on top
+    if (!isAJournalCurrentlyActive) {
+      ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+      return;
+    }
 
-const isAJournalCurrentlyActive = getAbsoluteTopJournal();
-
-//console.log("QJPC: top window: ",isAJournalCurrentlyActive)
-// Only go on if there is a journal currently opened and on top
-if (!isAJournalCurrentlyActive) {
-  ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
-  return;
-}
-
-  try {
-    await getClipboardText(sheetObject);
+    try {
+      await getClipboardText(sheetObject);
 
     //Get the export text
     //const text = await exportJournalText(sheetObject);
     //await navigator.clipboard.writeText(text);
     //if(text!==""){ui.notifications.info(game.i18n.localize("QJPC.notifications.copied"));}       
-  } catch (error) {
-    console.error(game.i18n.localize("QJPC.warning.error"), error);
-    ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
-  }
-},
-  onUp: () => {},
-  restricted: false,             // Restrict this Keybinding to gamemaster only?
+    } catch (error) {
+      console.error(game.i18n.localize("QJPC.warning.error"), error);
+      ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
+    }
+  },
+  //onUp: () => {},
   //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
   precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
 });
@@ -169,7 +153,7 @@ Hooks.on("renderSettingsConfig", (changed) => {
 });
 
 
-
+//Installs a menue option in the header of Journal entries into the 3 point menue
 Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
   const isJournal = sheet?.document?.documentName ?? "noJournal";
 
@@ -209,9 +193,9 @@ Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
 });
 
 async function exportJournalText(sheet) {
-  const pages = sheet.document.pages.contents ?? []; //contents will transform internally a collection into an array
+  const pages = sheet.document.pages.contents ?? []; //contents property/accessor will transform internally a collection into an array
   
-  const exportPages = getPagesToExport(sheet,pages);
+  const exportPages = getPagesToExport(sheet,pages); //collects the pages to be exported
  
  if(exportPages.length===0){
   return "";
@@ -223,13 +207,13 @@ async function exportJournalText(sheet) {
   //const isMarkdown = game.settings.get("quick-journal-page-clipboard", "returnMDtext");
   const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
   const isMarkdown = radioButtonFormat === "markdown";
-  const returnHTML = radioButtonFormat === "html";
+  const isHTML = radioButtonFormat === "html";
 
   for (const p of exportPages) {
     let text = "";
     //console.log("qjpc: Title: ",p.name)
     if(isPageTitle){
-      if(returnHTML || isMarkdown){
+      if(isHTML || isMarkdown){
     text = text + "<h1>" + p.name + "</h1>" + "</br>"+"\n"+"</br>"+"\n";
     } else {
       text = text +  p.name + "\n\n";
@@ -247,26 +231,39 @@ async function exportJournalText(sheet) {
 
 function getPagesToExport(sheet, activePages) {
     const isMultiple = sheet.isMultiple //check for multi page view
-    let sorted = [...activePages].sort((a, b) => a.sort - b.sort);
-    let returnAllowedPages = sorted.filter(p => isTextPage(p)) //filter any pages which are not text like PDF and IMAGE
-   //console.log ("qjpc: Pages to process: ",returnAllowedPages)
+    const isLimited = game.settings.get("quick-journal-page-clipboard", "allowExportForLimitedUserRights")
+    const user = game.user; //gets the user currently using this function to check for permissions of pages collected
+    // filer all pages which the user cannot see/access which starts from limited level 
+    // ==> BUt limited level seems to expose the pages even if they are NOT visiblemaybe Observer would be safer but inherently the game system needs to define this
+    let permissionRoleAllowed = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
+    if(isLimited){
+      permissionRoleAllowed = CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED
+  };
+    let allowedPages = [...activePages].filter((page) =>
+      page.testUserPermission(user, permissionRoleAllowed)
+    );
+    
+    let sorted = allowedPages.sort((a, b) => a.sort - b.sort);
+    let returnFinalPages = sorted.filter(p => isTextPage(p)) //filter any pages which are not text like PDF and IMAGE
+
+   console.log ("qjpc: Pages to process: ",returnFinalPages)
   if (isMultiple) {
-    return returnAllowedPages;
+    return returnFinalPages;
   } else {
     if(isTextPage(sorted[sheet.pageIndex])){
-    returnAllowedPages = [sorted[sheet.pageIndex]]
+    returnFinalPages = [sorted[sheet.pageIndex]]
     } else {
     ui.notifications.info(game.i18n.localize("QJPC.notifications.unsupported"));
-    returnAllowedPages = []
+    returnFinalPages = []
     }
-    return returnAllowedPages; 
+    return returnFinalPages; 
     // pageIndex is NOT the index of the array of the pages but the order of the sorted visible(?) pages!
   }
 }
 
 function isTextPage(page) {
   const type = page.type ?? "";
-  return type === "text" || type === "markdown"; // TODO: check if markdown has it's own type
+  return type === "text" || type === "markdown"; // TODO: check if Foundry markdown has it's own type
 }
 
 async function extractPlainTextFromPage(page) {
@@ -289,11 +286,11 @@ let resultingText = "";
 //const returnMD = game.settings.get("quick-journal-page-clipboard", "returnMDtext");
 const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
   const isMarkdown = radioButtonFormat === "markdown";
-  const returnHTML = radioButtonFormat === "html";
+  const isHTML = radioButtonFormat === "html";
 const isCuratedText = game.settings.get("quick-journal-page-clipboard", "isCuratedText");
 const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
 
-if (returnHTML || isMarkdown) {
+if (isHTML || isMarkdown) {
     // return the inner HTML as a string
     resultingText = doc.body.innerHTML || "";
   } else {
@@ -371,7 +368,7 @@ function getAbsoluteTopJournal() {
       //const isMarkdown = game.settings.get("quick-journal-page-clipboard", "returnMDtext");
       const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
       const isMarkdown = radioButtonFormat === "markdown";
-      //const returnHTML = radioButtonFormat === "html";
+      //const isHTML = radioButtonFormat === "html";
       const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
       let text = await exportJournalText(sheet);
       if(isMarkdown){
@@ -391,9 +388,9 @@ if(isEmptyLine){
   //const returnHTMLtext = game.settings.get("quick-journal-page-clipboard", "returnHTMLtext");
   const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
   const isMarkdown = radioButtonFormat === "markdown";
-  const returnHTML = radioButtonFormat === "html";
+  const isHTML = radioButtonFormat === "html";
 
-  if (isMarkdown && returnHTML) {
+  if (isMarkdown && isHTML) {
     // If both are true, turn off HTML and keep MD (or vice versa)
     game.settings.set("quick-journal-page-clipboard", "returnHTMLtext", false);
     game.settings.set("quick-journal-page-clipboard", "returnMDtext", false);
