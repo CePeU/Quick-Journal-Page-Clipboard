@@ -1,3 +1,15 @@
+## [1.0.5] / 2026-06-07
+### Added
+- Added Obsidian style callouts and settings
+- Callout for Blockquotes but Obsidian style
+- Callout for secrets
+- Callouts for details tag which is a section in Foundry
+### Fixed
+### Changed
+### Removed
+### Deprecated
+### Security
+
 ## [1.0.4] / 2026-06-05
 ### Added
 ### Fixed

@@ -21,5 +21,12 @@
   "QJPC.settings.outputFormat.name": "Ausgabe Format",
   "QJPC.settings.outputFormat.hint": "Das Ausgabe Formt das in die Zwischenablage gelegt werden soll. Markdown wird durch ein eigenen Renderer gerendert.",
   "QJPC.settings.allowLimited.name":"'Beschränkt Berechtigter' Export",
-  "QJPC.settings.allowLimited.hint": "Erlaubt den Export von 'Beschränkt' berechtigten Seiten. Vorsicht! Dies kann sehr systemspezifisch sein."
+  "QJPC.settings.allowLimited.hint": "Erlaubt den Export von 'Beschränkt' berechtigten Seiten. Vorsicht! Dies kann sehr systemspezifisch sein.",
+  "QJPC.settings.isSecretObsidianCallout.name":"Geheimnis als Callout",
+  "QJPC.settings.isSecretObsidianCallout.hint":"Gibt Secrets als Obsidian Stil Callouts mit dem Callout Bezeichner '[!secret]' aus.",
+  "QJPC.settings.isDetailsTagObsidianCallout.name":"'Details' Tag als Callout",
+  "QJPC.settings.isDetailsTagObsidianCallout.hint":"Gibt HTML Details tags als Obsidian MD Callouts mit dem Callout Bezeichner '[!note]' aus.",
+  "QJPC.settings.isBlockQuoteObsidianCallout.name":"Blockquotes als Callout",
+  "QJPC.settings.isBlockQuoteObsidianCallout.hint":"Gibt Blockquotes als Obsidian MD Callouts mit dem Callout Bezeichner '[!info]' aus."
+
 }

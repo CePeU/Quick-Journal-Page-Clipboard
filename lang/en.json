@@ -21,5 +21,11 @@
   "QJPC.settings.outputFormat.name": "Output format",
   "QJPC.settings.outputFormat.hint": "The output format for the clipboard. Markdown will not be rendered by the Foundry rendere.",
   "QJPC.settings.allowLimited.name":"'Limited rights' export",
-  "QJPC.settings.allowLimited.hint": "Allows for the export of pages which have the 'limited' user right flag. Caution! this migth be very system specific."
+  "QJPC.settings.allowLimited.hint": "Allows for the export of pages which have the 'limited' user right flag. Caution! this migth be very system specific.",
+  "QJPC.settings.isSecretObsidianCallout.name":"Secret as Callout",
+  "QJPC.settings.isSecretObsidianCallout.hint":"Returns Obsidian style Markdown callouts with the callout denominator '[!secret]' for secrets",
+  "QJPC.settings.isDetailsTagObsidianCallout.name":"'Details' tag as Callout",
+  "QJPC.settings.isDetailsTagObsidianCallout.hint":"Returns Obsidian style Markdown callouts with the callout denominator '[!note]' for HTML details tags.",
+  "QJPC.settings.isBlockQuoteObsidianCallout.name":"Blockquote as Callout",
+  "QJPC.settings.isBlockQuoteObsidianCallout.hint":"Returns Obsidian style Markdown callouts with the callout denominator '[!info]' for blockquotes."
 }

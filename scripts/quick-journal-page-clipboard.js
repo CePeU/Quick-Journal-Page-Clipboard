@@ -92,6 +92,35 @@ game.settings.register("quick-journal-page-clipboard", "outputFormat", {
   restricted: false
 });
 
+  game.settings.register("quick-journal-page-clipboard", "isSecretObsidianCallout", {
+    name: game.i18n.localize("QJPC.settings.isSecretObsidianCallout.name"),
+    hint: game.i18n.localize("QJPC.settings.isSecretObsidianCallout.hint"),
+    scope: "user",
+    config: true,
+    type: Boolean,
+    default: false,
+    restricted: false
+  });
+
+    game.settings.register("quick-journal-page-clipboard", "isDetailsTagObsidianCallout", {
+    name: game.i18n.localize("QJPC.settings.isDetailsTagObsidianCallout.name"),
+    hint: game.i18n.localize("QJPC.settings.isDetailsTagObsidianCallout.hint"),
+    scope: "user",
+    config: true,
+    type: Boolean,
+    default: false,
+    restricted: false
+  });
+
+  game.settings.register("quick-journal-page-clipboard", "isBlockQuoteObsidianCallout", {
+    name: game.i18n.localize("QJPC.settings.isBlockQuoteObsidianCallout.name"),
+    hint: game.i18n.localize("QJPC.settings.isBlockQuoteObsidianCallout.hint"),
+    scope: "user",
+    config: true,
+    type: Boolean,
+    default: false,
+    restricted: false
+  });
 
   game.keybindings.register("quick-journal-page-clipboard", "showNotification", {
   name: "Copy to clipboard",
@@ -271,7 +300,7 @@ if (isHTML || isMarkdown) {
     }
 
     if(isEmptyLine){
-      resultingText = resultingText.replace(/^\s*\n/gm, "");
+      resultingText = resultingText.replace(/^\s*\n/gm, ""); // remove lines that are empty or only whitespace
     }
   }
   return resultingText;
@@ -331,15 +360,25 @@ function getAbsoluteTopJournal() {
 
   async function getClipboardText(sheet) {
       
+     const calloutSettings = {
+        isRenderNoteCallout: game.settings.get("quick-journal-page-clipboard", "isDetailsTagObsidianCallout"),
+        isRenderInfoCallout: game.settings.get("quick-journal-page-clipboard", "isBlockQuoteObsidianCallout"),
+        isRenderSecretCallout: game.settings.get("quick-journal-page-clipboard", "isSecretObsidianCallout")
+     }
+      
+
       const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
       const isMarkdown = radioButtonFormat === "markdown";
+
 
       const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
       let text = await exportJournalText(sheet);
       if(isMarkdown){
-        text = await convertHtmlToMarkdown(text);
+        text = await convertHtmlToMarkdown(text,calloutSettings);
 if(isEmptyLine){
         text = text.replace(/^\s*\n/gm, "");
+         const regex = /^(> (?!\[!).+)(\r?\n)(> \[!.+)/gm; //Regex to look for > xxx /n/n and then > [! and put a new line in between
+        text = text.replaceAll(regex, '$1$2$2$3'); // This way two Obsidian Callout Blocks stay seperated even if the empty lines have been deleted between them
 }
       }
        
