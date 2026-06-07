@@ -1,3 +1,16 @@
+## [1.0.6] / 2026-06-07
+### Added
+- Added secret export toggle for GM
+### Fixed
+- export of secrets seems to have been buggy
+### Changed
+- added technical section in CHANGELOG.md
+### Technical
+- added gitignore file
+### Removed
+### Deprecated
+### Security
+
 ## [1.0.5] / 2026-06-07
 ### Added
 - Added Obsidian style callouts and settings

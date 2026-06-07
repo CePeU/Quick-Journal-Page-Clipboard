@@ -42,9 +42,7 @@ export async function convertHtmlToMarkdown(html, calloutSettings) {
         
         turndownService.addRule('obsidianSecretCallout', {
              filter: function (node, options) {
-                console.log("QJPC: Secret Node info ",node)
-                console.log("QJPC: Secret Node NAME ",node.nodeName)
-                console.log("QJPC: Secret Node CLASS ",node.classList)
+               
                 return (node.nodeName === 'SECTION' && node.classList.contains('secret'))
             },
 

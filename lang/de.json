@@ -1,6 +1,6 @@
 {
-  "QJPC.settings.removeGMSecrets.name": "Entferne die Spielleiterhinweise",
-  "QJPC.settings.removeGMSecrets.hint": "Dies entfernt die Spielleiter Hinweise/Geheimnisse vor dem Export.",
+  "QJPC.settings.removeGMSecrets.name": "Geheimnisse für Spieler",
+  "QJPC.settings.removeGMSecrets.hint": "Dies entfernt die versteckten Geheimnisse für alle SPIELER vor dem Export.",
   "QJPC.settings.returnHTMLtext.name": "HTML Text",
   "QJPC.settings.returnHTMLtext.hint": "Liefert das HTML das von Foundry gespeichert und im editor bearbeitet werden kann statt nur Text.",
   "QJPC.settings.isCuratedText.name":"Angepasster Text",
@@ -27,6 +27,8 @@
   "QJPC.settings.isDetailsTagObsidianCallout.name":"'Details' Tag als Callout",
   "QJPC.settings.isDetailsTagObsidianCallout.hint":"Gibt HTML Details tags als Obsidian MD Callouts mit dem Callout Bezeichner '[!note]' aus.",
   "QJPC.settings.isBlockQuoteObsidianCallout.name":"Blockquotes als Callout",
-  "QJPC.settings.isBlockQuoteObsidianCallout.hint":"Gibt Blockquotes als Obsidian MD Callouts mit dem Callout Bezeichner '[!info]' aus."
+  "QJPC.settings.isBlockQuoteObsidianCallout.hint":"Gibt Blockquotes als Obsidian MD Callouts mit dem Callout Bezeichner '[!info]' aus.",
+  "QJPC.settings.secretsForGM.name": "Geheimnisse für Spielleiter",
+  "QJPC.settings.secretsForGM.hint":  "Schaltet den Export von versteckten Geheimnissen für den Spielleiter ein und aus."
 
 }

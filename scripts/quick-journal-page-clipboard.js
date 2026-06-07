@@ -37,6 +37,16 @@ game.settings.register("quick-journal-page-clipboard", "removeGMSecrets", {
     restricted: true
   });
 
+  game.settings.register("quick-journal-page-clipboard", "secretsForGM", {
+    name: game.i18n.localize("QJPC.settings.secretsForGM.name"),
+    hint: game.i18n.localize("QJPC.settings.secretsForGM.hint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    restricted: true
+  });
+
 game.settings.register("quick-journal-page-clipboard", "allowExportForLimitedUserRights", {
     name: game.i18n.localize("QJPC.settings.allowLimited.name"),
     hint: game.i18n.localize("QJPC.settings.allowLimited.hint"),
@@ -274,10 +284,30 @@ async function extractPlainTextFromPage(page) {
   //doc.querySelectorAll("script, style").forEach(el => el.remove());
 
     // remove all section tag elements with class "secret" if setting is enabled
-  const removeSecrets = game.settings.get("quick-journal-page-clipboard", "removeGMSecrets");
-  if (removeSecrets) {
-     doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
-  }
+  let removeSecretsGlobal = game.settings.get("quick-journal-page-clipboard", "removeGMSecrets");
+  let removeSecretsForGM = game.settings.get("quick-journal-page-clipboard", "secretsForGM")
+  
+
+  console.log("QJPC: Remove Secret global: ",removeSecretsGlobal)
+   console.log("QJPC: Remove Secret for GM: ",removeSecretsForGM)
+   console.log("QJPC: Is a GM", game.user.isGM)
+  //if(!removeSecretsForGM){
+  //  console.log("QJPC: GM Secret will be removed: ",removeSecretsForGM)
+  //if (removeSecretsGlobal) {
+  //  console.log("QJPC: GM Secret will be removed: ",removeSecretsGlobal)
+  //   doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
+  //  }
+  //}
+
+   if(removeSecretsGlobal && !game.user.isGM){
+    console.log("QJPC:- Secret will be removed for all: ",removeSecretsGlobal)
+    doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
+   }
+
+     if(game.user.isGM && removeSecretsForGM ){
+    console.log("QJPC:- Secret will be removed for GM: ",removeSecretsGlobal)
+    doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
+   }
 
 let resultingText = "";
 
