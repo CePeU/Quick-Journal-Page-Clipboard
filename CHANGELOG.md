@@ -1,5 +1,15 @@
 ## [1.0.6] / 2026-06-07
 ### Added
+### Fixed
+### Changed
+- Changed wording in language files for secret export to be easier to be understood 
+### Technical
+### Removed
+### Deprecated
+### Security
+
+## [1.0.6] / 2026-06-07
+### Added
 - Added secret export toggle for GM
 ### Fixed
 - export of secrets seems to have been buggy

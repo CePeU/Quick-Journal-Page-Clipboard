@@ -1,5 +1,5 @@
 {
-  "QJPC.settings.removeGMSecrets.name": "Secrets for all PLAYERS",
+  "QJPC.settings.removeGMSecrets.name": "Hidden secrets for all PLAYERS",
   "QJPC.settings.removeGMSecrets.hint": "Removes hidden secrets from exported journal text for all PLAYERS.",
   "QJPC.settings.returnHTMLtext.name": "HMTL text",
   "QJPC.settings.returnHTMLtext.hint": "Returns the HTML Foundry saves and seen in the editor instead of plain text.",
@@ -28,6 +28,6 @@
   "QJPC.settings.isDetailsTagObsidianCallout.hint":"Returns Obsidian style Markdown callouts with the callout denominator '[!note]' for HTML details tags.",
   "QJPC.settings.isBlockQuoteObsidianCallout.name":"Blockquote as Callout",
   "QJPC.settings.isBlockQuoteObsidianCallout.hint":"Returns Obsidian style Markdown callouts with the callout denominator '[!info]' for blockquotes.",
-  "QJPC.settings.secretsForGM.name": "Secrets for GM",
+  "QJPC.settings.secretsForGM.name": "No hidden Secrets for GM",
   "QJPC.settings.secretsForGM.hint":  "Toggles the export of hidden secrets for the GM."
 }
