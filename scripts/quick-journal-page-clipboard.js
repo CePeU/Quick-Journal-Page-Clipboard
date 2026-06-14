@@ -2,7 +2,7 @@
 //console.log("QJPC: Module Quick-Journal-Page-Clippboard has started");
 
 import { convertHtmlToMarkdown } from "./render-markdown.js";
-
+import { createSettings, getSettings } from "./settings.js";
 let sheetObject = null;
 
 Hooks.once("init", () => {
@@ -26,111 +26,7 @@ Hooks.once("init", () => {
 }
 */
 // now name and hint can be removed as propperties
-
-game.settings.register("quick-journal-page-clipboard", "removeGMSecrets", {
-    name: game.i18n.localize("QJPC.settings.removeGMSecrets.name"),
-    hint: game.i18n.localize("QJPC.settings.removeGMSecrets.hint"),
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: true,
-    restricted: true
-  });
-
-  game.settings.register("quick-journal-page-clipboard", "secretsForGM", {
-    name: game.i18n.localize("QJPC.settings.secretsForGM.name"),
-    hint: game.i18n.localize("QJPC.settings.secretsForGM.hint"),
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: true
-  });
-
-game.settings.register("quick-journal-page-clipboard", "allowExportForLimitedUserRights", {
-    name: game.i18n.localize("QJPC.settings.allowLimited.name"),
-    hint: game.i18n.localize("QJPC.settings.allowLimited.hint"),
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: true
-  });
-
-  game.settings.register("quick-journal-page-clipboard", "isCuratedText", {
-    name: game.i18n.localize("QJPC.settings.isCuratedText.name"),
-    hint: game.i18n.localize("QJPC.settings.isCuratedText.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: true,
-    restricted: false
-  });
-
-  game.settings.register("quick-journal-page-clipboard", "isEmptyLineText", {
-    name: game.i18n.localize("QJPC.settings.isEmptyLineText.name"),
-    hint: game.i18n.localize("QJPC.settings.isEmptyLineText.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: true,
-    restricted: false
-  });
-
-  game.settings.register("quick-journal-page-clipboard", "isPageTitle", {
-    name: game.i18n.localize("QJPC.settings.isPageTitle.name"),
-    hint: game.i18n.localize("QJPC.settings.isPageTitle.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: false
-  });
-
-game.settings.register("quick-journal-page-clipboard", "outputFormat", {
-  name: game.i18n.localize("QJPC.settings.outputFormat.name"),
-  hint: game.i18n.localize("QJPC.settings.outputFormat.hint"),
-  scope: "user",
-  config: true,
-  type: String,
-  choices: {
-    plaintext: game.i18n.localize("QJPC.settings.plaintext.name"),
-    markdown: game.i18n.localize("QJPC.settings.returnMDtext.name"),
-    html: game.i18n.localize("QJPC.settings.returnHTMLtext.name")
-  },
-  default: "plaintext",
-  restricted: false
-});
-
-  game.settings.register("quick-journal-page-clipboard", "isSecretObsidianCallout", {
-    name: game.i18n.localize("QJPC.settings.isSecretObsidianCallout.name"),
-    hint: game.i18n.localize("QJPC.settings.isSecretObsidianCallout.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: false
-  });
-
-    game.settings.register("quick-journal-page-clipboard", "isDetailsTagObsidianCallout", {
-    name: game.i18n.localize("QJPC.settings.isDetailsTagObsidianCallout.name"),
-    hint: game.i18n.localize("QJPC.settings.isDetailsTagObsidianCallout.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: false
-  });
-
-  game.settings.register("quick-journal-page-clipboard", "isBlockQuoteObsidianCallout", {
-    name: game.i18n.localize("QJPC.settings.isBlockQuoteObsidianCallout.name"),
-    hint: game.i18n.localize("QJPC.settings.isBlockQuoteObsidianCallout.hint"),
-    scope: "user",
-    config: true,
-    type: Boolean,
-    default: false,
-    restricted: false
-  });
+  createSettings()
 
   game.keybindings.register("quick-journal-page-clipboard", "showNotification", {
   name: "Copy to clipboard",
@@ -212,16 +108,20 @@ async function exportJournalText(sheet) {
  } else {
   const parts = [];
   
-  const isPageTitle = game.settings.get("quick-journal-page-clipboard", "isPageTitle");
-  const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
-  const isMarkdown = radioButtonFormat === "markdown";
-  const isHTML = radioButtonFormat === "html";
 
+ const settings = getSettings()
+  //const styleCSS = game.settings.get("quick-journal-page-clipboard", "htmlStyleTag");
+  //const isPageTitle = game.settings.get("quick-journal-page-clipboard", "isPageTitle");
+  //const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
+  //const isMarkdown = radioButtonFormat === "markdown";
+  //const isHTML = radioButtonFormat === "html";
+
+  console.log("QJPC: settings ",settings)
   for (const p of exportPages) {
     let text = "";
     //console.log("qjpc: Title: ",p.name)
-    if(isPageTitle){
-      if(isHTML || isMarkdown){
+    if(settings.isPageTitle){
+      if(settings.isHTML || settings.isMarkdown){
     text = text + "<h1>" + p.name + "</h1>" + "</br>"+"\n"+"</br>"+"\n";
     } else {
       text = text +  p.name + "\n\n";
@@ -233,18 +133,28 @@ async function exportJournalText(sheet) {
     }
   }
 
-  return parts.join("\n\n");
+  let exportText = parts.join("\n\n")
+
+  if (settings.isHTML) {
+  if(settings.isCSS){
+    exportText="<style>"+settings.css+"</style>"+exportText
+  }
+}
+
+
+  return exportText;
   }
 }
 
 function getPagesToExport(sheet, activePages) {
     const isMultiple = sheet.isMultiple //check for multi page view
-    const isLimited = game.settings.get("quick-journal-page-clipboard", "allowExportForLimitedUserRights")
+    const settings = getSettings();
+    //const isLimited = game.settings.get("quick-journal-page-clipboard", "allowExportForLimitedUserRights")
     const user = game.user; //gets the user currently using this function to check for permissions of pages collected
     // filter all pages which the user cannot see/access which starts from limited level 
     // ==> BUt limited level can be system agnostic so standard is Oberver
     let permissionRoleAllowed = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
-    if(isLimited){
+    if(settings.isLimited){
       permissionRoleAllowed = CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED
   };
     let allowedPages = [...activePages].filter((page) =>
@@ -284,13 +194,15 @@ async function extractPlainTextFromPage(page) {
   //doc.querySelectorAll("script, style").forEach(el => el.remove());
 
     // remove all section tag elements with class "secret" if setting is enabled
-  let removeSecretsGlobal = game.settings.get("quick-journal-page-clipboard", "removeGMSecrets");
-  let removeSecretsForGM = game.settings.get("quick-journal-page-clipboard", "secretsForGM")
+  //let removeSecretsGlobal = game.settings.get("quick-journal-page-clipboard", "removeGMSecrets");
+  //let removeSecretsForGM = game.settings.get("quick-journal-page-clipboard", "secretsForGM")
   
+  const settings = getSettings()
 
-  console.log("QJPC: Remove Secret global: ",removeSecretsGlobal)
-   console.log("QJPC: Remove Secret for GM: ",removeSecretsForGM)
-   console.log("QJPC: Is a GM", game.user.isGM)
+  //console.log("QJPC: Remove Secret global: ",removeSecretsGlobal)
+  // console.log("QJPC: Remove Secret for GM: ",removeSecretsForGM)
+  // console.log("QJPC: Is a GM", game.user.isGM)
+  
   //if(!removeSecretsForGM){
   //  console.log("QJPC: GM Secret will be removed: ",removeSecretsForGM)
   //if (removeSecretsGlobal) {
@@ -299,40 +211,53 @@ async function extractPlainTextFromPage(page) {
   //  }
   //}
 
-   if(removeSecretsGlobal && !game.user.isGM){
-    console.log("QJPC:- Secret will be removed for all: ",removeSecretsGlobal)
+   if(settings.isRemoveSecretsForAllPlayers && !game.user.isGM){
+    //console.log("QJPC:- Secret will be removed for all: ",removeSecretsGlobal)
     doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
    }
 
-     if(game.user.isGM && removeSecretsForGM ){
-    console.log("QJPC:- Secret will be removed for GM: ",removeSecretsGlobal)
+     if(game.user.isGM && settings.isRemoveSecretsForGM){
+    //console.log("QJPC:- Secret will be removed for GM: ",removeSecretsGlobal)
     doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
    }
 
 let resultingText = "";
 
-const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
-  const isMarkdown = radioButtonFormat === "markdown";
-  const isHTML = radioButtonFormat === "html";
-const isCuratedText = game.settings.get("quick-journal-page-clipboard", "isCuratedText");
-const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
+//const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
+  //const isMarkdown = radioButtonFormat === "markdown";
+  //const isHTML = radioButtonFormat === "html";
+//const isCuratedText = game.settings.get("quick-journal-page-clipboard", "isCuratedText");
+//const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
 
-if (isHTML || isMarkdown) {
-    // return the inner HTML as a string
-    resultingText = doc.body.innerHTML || "";
-  } else {
-    if(isCuratedText){
-      const text = doc.body.innerText || "";
-      resultingText = normalizeText(text);
-    } else {
-    //textContent should retain "styling" like several spaces but Foundry does again wierd sanitizing so probably useless option
-    resultingText = doc.body.textContent || "";
+//const searchPathFor = game.settings.get("quick-journal-page-clipboard", "picturePathSearchFor")  ?? "";
+//const replacePathWith =game.settings.get("quick-journal-page-clipboard", "picturePathReplaceWith")  ?? "";
+
+switch (true) {
+  case settings.isHTML:
+    if(settings.searchForPath.length>0 && settings.replaceWidthPath.length>0){
+    replaceImgSrcPaths(doc, settings.searchForPath, settings.replaceWidthPath)
     }
+    resultingText = doc.body.innerHTML || "";
+    break;
 
-    if(isEmptyLine){
+  case settings.isMarkdown:
+    resultingText = doc.body.innerHTML || "";
+    break;
+
+  case settings.isCuratedText:
+    resultingText = normalizeText(doc.body.innerText || "");
+       if(settings.isEmptyLine){
       resultingText = resultingText.replace(/^\s*\n/gm, ""); // remove lines that are empty or only whitespace
     }
-  }
+    break;
+
+  default:
+    resultingText = doc.body.textContent || "";
+       if(settings.isEmptyLine){
+      resultingText = resultingText.replace(/^\s*\n/gm, ""); // remove lines that are empty or only whitespace
+    }
+    break;
+}
   return resultingText;
 }
 
@@ -390,22 +315,23 @@ function getAbsoluteTopJournal() {
 
   async function getClipboardText(sheet) {
       
-     const calloutSettings = {
-        isRenderNoteCallout: game.settings.get("quick-journal-page-clipboard", "isDetailsTagObsidianCallout"),
-        isRenderInfoCallout: game.settings.get("quick-journal-page-clipboard", "isBlockQuoteObsidianCallout"),
-        isRenderSecretCallout: game.settings.get("quick-journal-page-clipboard", "isSecretObsidianCallout")
-     }
+    const settings = getSettings()
+     //const calloutSettings = {
+      //  isRenderNoteCallout: game.settings.get("quick-journal-page-clipboard", "isDetailsTagObsidianCallout"),
+      //  isRenderInfoCallout: game.settings.get("quick-journal-page-clipboard", "isBlockQuoteObsidianCallout"),
+      //  isRenderSecretCallout: game.settings.get("quick-journal-page-clipboard", "isSecretObsidianCallout")
+     //}
       
 
-      const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
-      const isMarkdown = radioButtonFormat === "markdown";
+      //const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
+      //const isMarkdown = radioButtonFormat === "markdown";
 
 
-      const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
+      //const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
       let text = await exportJournalText(sheet);
-      if(isMarkdown){
-        text = await convertHtmlToMarkdown(text,calloutSettings);
-if(isEmptyLine){
+      if(settings.isMarkdown){
+        text = await convertHtmlToMarkdown(text,settings);//,calloutSettings);
+if(settings.isEmptyLine){
         text = text.replace(/^\s*\n/gm, "");
          const regex = /^(> (?!\[!).+)(\r?\n)(> \[!.+)/gm; //Regex to look for > xxx /n/n and then > [! and put a new line in between
         text = text.replaceAll(regex, '$1$2$2$3'); // This way two Obsidian Callout Blocks stay seperated even if the empty lines have been deleted between them
@@ -415,3 +341,36 @@ if(isEmptyLine){
       await navigator.clipboard.writeText(text); // browser standard for putting text into the clipboard 
       if(text!==""){ui.notifications.info(game.i18n.localize("QJPC.notifications.copied"));}
   };
+
+  function replaceImgSrcPaths(doc, searchForPart, replaceWidthPath) {
+  if (!searchForPart) return;
+  if (!doc) return;
+
+  const decodeFromUri = (s) => {
+    try {
+      return decodeURIComponent(s);
+    } catch {
+      return s;
+    }
+  };
+
+  const searchPartDecoded = decodeFromUri(searchForPart);
+
+  doc.querySelectorAll("img[src]").forEach(img => {
+    const imgSrcPath = img.getAttribute("src") || "";
+
+    const imgSrcPathDecoded = decodeFromUri(imgSrcPath);
+
+    if (imgSrcPathDecoded .includes(searchPartDecoded)) {
+      const replacedDecoded = imgSrcPathDecoded .replaceAll(searchPartDecoded, replaceWidthPath);
+
+      try {
+        img.setAttribute("src", replacedDecoded);
+      } catch {
+        img.setAttribute("src", replacedDecoded);
+      }
+    }
+  });
+
+  return doc;
+}

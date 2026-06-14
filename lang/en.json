@@ -28,6 +28,12 @@
   "QJPC.settings.isDetailsTagObsidianCallout.hint":"Returns Obsidian style Markdown callouts with the callout denominator '[!note]' for HTML details tags.",
   "QJPC.settings.isBlockQuoteObsidianCallout.name":"Blockquote as Callout",
   "QJPC.settings.isBlockQuoteObsidianCallout.hint":"Returns Obsidian style Markdown callouts with the callout denominator '[!info]' for blockquotes.",
-  "QJPC.settings.secretsForGM.name": "No hidden Secrets for GM",
-  "QJPC.settings.secretsForGM.hint":  "Toggles the export of hidden secrets for the GM."
+  "QJPC.settings.secretsForGM.name": "Hide Secrets for GM",
+  "QJPC.settings.secretsForGM.hint":  "Toggles the export of hidden secrets for the GM.",
+    "QJPC.settings.htmlStyleTag.name": "Style CSS",
+  "QJPC.settings.htmlStyleTag.hint": "Copy and paste any CSS you want to use for the html export here (without style tags). It will be added at the start of the html.",
+"QJPC.settings.picturePathSearchFor.name": "IMG path to replace",
+"QJPC.settings.picturePathSearchFor.hint": "Enter the string of the IMG path you want to search and replace for. Like for example the Foundry path 'assets'. Leave empty if not replacements shall take place.",
+"QJPC.settings.picturePathReplaceWith.name": "IMG path to be replaced with",
+"QJPC.settings.picturePathReplaceWith.hint": "This is the IMG path you want to replace with. For example 'D:\\Foundry14.363\\Data\\assets'. Leave empty if not replacements shall take place."
 }

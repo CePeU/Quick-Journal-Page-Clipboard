@@ -1,0 +1,38 @@
+<form>
+  <div class="form-group">
+    <label for="isSecretObsidianCallout">
+      {{localize "QJPC.settings.isSecretObsidianCallout.name"}}
+    </label>
+    <input type="checkbox" id="isSecretObsidianCallout" name="isSecretObsidianCallout" {{#if isSecretObsidianCallout}}checked{{/if}}>
+    <p class="notes">{{localize "QJPC.settings.isSecretObsidianCallout.hint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="isDetailsTagObsidianCallout">
+      {{localize "QJPC.settings.isDetailsTagObsidianCallout.name"}}
+    </label>
+    <input type="checkbox" id="isDetailsTagObsidianCallout" name="isDetailsTagObsidianCallout" {{#if isDetailsTagObsidianCallout}}checked{{/if}}>
+    <p class="notes">{{localize "QJPC.settings.isDetailsTagObsidianCallout.hint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="isBlockQuoteObsidianCallout">
+      {{localize "QJPC.settings.isBlockQuoteObsidianCallout.name"}}
+    </label>
+    <input type="checkbox" id="isBlockQuoteObsidianCallout" name="isBlockQuoteObsidianCallout" {{#if isBlockQuoteObsidianCallout}}checked{{/if}}>
+    <p class="notes">{{localize "QJPC.settings.isBlockQuoteObsidianCallout.hint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="htmlStyleTag">
+      {{localize "QJPC.settings.htmlStyleTag.name"}}
+    </label>
+    <textarea id="htmlStyleTag" name="htmlStyleTag" rows="6">{{htmlStyleTag}}</textarea>
+    <p class="notes">{{localize "QJPC.settings.htmlStyleTag.hint"}}</p>
+  </div>
+
+  <div class="form-buttons">
+    <button type="submit" class="button">{{localize "Save Changes"}}</button>
+    <button type="button" class="button cancel" data-action="cancel">{{localize "Cancel"}}</button>
+  </div>
+</form>

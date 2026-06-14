@@ -5,6 +5,7 @@ let turndownService;
 
 export async function convertHtmlToMarkdown(html, calloutSettings) {
     
+    console.log("QJPC: settings ",calloutSettings)
     // We need to create the objekt each time new because the settings might have changed meanwhile and thus the rules also will change
     //if (!turndownService) {
         turndownService = new TurndownService({
@@ -16,7 +17,7 @@ export async function convertHtmlToMarkdown(html, calloutSettings) {
         turndownService.use(gfm);
 
         // Rule for details tag callout type
-    if(calloutSettings.isRenderNoteCallout){
+    if(calloutSettings.isNoteCallout){
         turndownService.addRule('obsidianDetailsCallout', {
             filter: 'details',
             replacement: ObsidianNoteCallout 
@@ -24,7 +25,7 @@ export async function convertHtmlToMarkdown(html, calloutSettings) {
         }
 
         // Rule for Blockquote tag
-         if(calloutSettings.isRenderInfoCallout){
+         if(calloutSettings.isInfoCallout){
         turndownService.addRule('obsidianInfoCallout', {
              filter: 'blockquote',
             replacement: ObsidianInfoCallout
@@ -32,7 +33,7 @@ export async function convertHtmlToMarkdown(html, calloutSettings) {
     }
 
         //Rule for section tag callout type which is a secret in Foundry     
-        if(calloutSettings.isRenderSecretCallout){
+        if(calloutSettings.isSecretCallout){
         // Dirty fix so summary tag does not get dropped to soon ...
         // TODO: Try do do it with keep rule in the next iteration
         turndownService.addRule('ignoreSummary', {
