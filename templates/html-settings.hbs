@@ -1,4 +1,12 @@
-<form>
+<div class="html-settings">
+
+<div class="form-group">
+    <label for="htmlHeader">
+      {{localize "QJPC.settings.htmlHeader.name"}}
+    </label>
+    <textarea id="htmlHeader" name="htmlHeader" rows="3">{{htmlStyleTag}}</textarea>
+    <p class="notes">{{localize "QJPC.settings.htmlHeader.hint"}}</p>
+  </div>
 
 <div class="form-group">
     <label for="htmlStyleTag">
@@ -6,6 +14,15 @@
     </label>
     <textarea id="htmlStyleTag" name="htmlStyleTag" rows="10">{{htmlStyleTag}}</textarea>
     <p class="notes">{{localize "QJPC.settings.htmlStyleTag.hint"}}</p>
+  </div>
+
+
+<div class="form-group">
+    <label for="base64PictureExport">
+      {{localize "QJPC.settings.base64PictureExport.name"}}
+    </label>
+    <input type="checkbox" id="base64PictureExport" name="base64PictureExport" {{#if base64PictureExport}}checked{{/if}}>
+    <p class="notes">{{localize "QJPC.settings.base64PictureExport.hint"}}</p>
   </div>
 
   <div class="form-group">
@@ -24,8 +41,16 @@
     <p class="notes">{{localize "QJPC.settings.picturePathReplaceWith.hint"}}</p>
   </div>
 
+  <div class="form-group">
+    <label for="htmlFooter">
+      {{localize "QJPC.settings.htmlFooter.name"}}
+    </label>
+    <textarea id="htmlFooter" name="htmlFooter" rows="3">{{htmlStyleTag}}</textarea>
+    <p class="notes">{{localize "QJPC.settings.htmlFooter.hint"}}</p>
+  </div>
+
   <div class="form-buttons">
-    <button type="submit" class="button save">{{localize "QJPC.settings.buttons.save"}}</button>
+    <button type="submit" class="button save" data-action="setSettings">{{localize "QJPC.settings.buttons.save"}}</button>
     <button type="button" class="button cancel" data-action="cancel">{{localize "QJPC.settings.buttons.cancel"}}</button>
   </div>
-</form>
+</div>

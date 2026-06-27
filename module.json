@@ -19,8 +19,12 @@
   "esmodules": [
     "scripts/quick-journal-page-clipboard.js",
     "scripts/render-markdown.js",
+    "scripts/settings.js",
     "scripts/lib/turndown.js",
     "scripts/lib/turndown-plugin-gfm.js"
+  ],
+  "styles": [
+    "styles/quick-journal-page-clipboard.css"
   ],
     "languages": [
     {

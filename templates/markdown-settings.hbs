@@ -1,4 +1,4 @@
-<form>
+<div class="markdown-settings">
   <div class="form-group">
     <label for="isSecretObsidianCallout">
       {{localize "QJPC.settings.isSecretObsidianCallout.name"}}
@@ -23,16 +23,8 @@
     <p class="notes">{{localize "QJPC.settings.isBlockQuoteObsidianCallout.hint"}}</p>
   </div>
 
-  <div class="form-group">
-    <label for="htmlStyleTag">
-      {{localize "QJPC.settings.htmlStyleTag.name"}}
-    </label>
-    <textarea id="htmlStyleTag" name="htmlStyleTag" rows="6">{{htmlStyleTag}}</textarea>
-    <p class="notes">{{localize "QJPC.settings.htmlStyleTag.hint"}}</p>
-  </div>
-
   <div class="form-buttons">
-    <button type="submit" class="button">{{localize "Save Changes"}}</button>
-    <button type="button" class="button cancel" data-action="cancel">{{localize "Cancel"}}</button>
+    <button type="submit" class="button save" data-action="setSettings">{{localize "QJPC.settings.buttons.save"}}</button>
+    <button type="button" class="button cancel" data-action="cancel">{{localize "QJPC.settings.buttons.cancel"}}</button>
   </div>
-</form>
+</div>
