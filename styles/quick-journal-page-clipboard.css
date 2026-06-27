@@ -13,8 +13,6 @@
   resize: both;
 }
 
-.qjpc-settings .notes {}
-
 .qjpc-settings .form-buttons {
   display: flex;
   /* Aktiviert Flexbox, wodurch Elemente standardmäßig nebeneinander stehen */
@@ -39,36 +37,13 @@
   resize: both;
 }
 
-@media print {
+.qjpc-print-modal .print-button {
+  display: flex;
+  /* Aktiviert Flexbox, wodurch Elemente standardmäßig nebeneinander stehen */
+  gap: 10px;
+  /* Erzeugt einen flexiblen Abstand zwischen den Buttons */
+  justify-content: flex-end;
+  /* Richtet die Buttons linksbündig aus (Nutze 'flex-end' für rechtsbündig) */
+  background: red,
 
-  /* Hide all of Foundry VTT's standard interface */
-  body,
-  #ui-top,
-  #ui-left,
-  #ui-right,
-  #ui-bottom,
-  #board,
-  #loading {
-    display: none !important;
-  }
-
-  /* Target your specific popup and force it to be visible */
-  html,
-  body,
-  .qjpc-print-modal {
-    display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    background: white !important;
-    color: black !important;
-    box-shadow: none !important;
-  }
-
-  /* Hide the print button itself on the paper result */
-  .onPrint {
-    display: none !important;
-  }
 }

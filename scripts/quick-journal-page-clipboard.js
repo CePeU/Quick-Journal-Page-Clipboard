@@ -5,6 +5,7 @@ import { convertHtmlToMarkdown } from "./render-markdown.js";
 import { createSettings, getSettings } from "./settings.js";
 import { imageToBase64, convertPageImagesToBase64 } from "./render-html.js";
 import PrintPopup from "./printModal.js";
+import { createKeybinds } from "./settings-keybinds.js";
 
 
 let sheetObject = null;
@@ -32,7 +33,9 @@ Hooks.once("init", () => {
   */
   // now name and hint can be removed as propperties
   createSettings()
-
+  const settings = getSettings()
+  createKeybinds(settings)
+  /*
   game.keybindings.register("quick-journal-page-clipboard", "showNotification", {
     name: "Copy to clipboard",
     hint: "The keybinding will copy the text of the currently visible page or multipage to the clipboard. Journal/Page needs to be the topmost window.",
@@ -54,7 +57,7 @@ Hooks.once("init", () => {
       const isAJournalCurrentlyActive = getAbsoluteTopJournal();
       //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
 
-      // Only go on if there is a journal currently opened and on top
+      // Only go on if tere is a journal currently opened and on top
       if (!isAJournalCurrentlyActive) {
         ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
         return;
@@ -70,7 +73,7 @@ Hooks.once("init", () => {
     //onUp: () => {},
     //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
-  });
+  });*/
 
   console.log("QJPC: Module Quick-Journal-Page-Clippboard has started")
 });
@@ -84,14 +87,43 @@ Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
   //console.log("qjpc: Sheet: ",sheet)
   sheetObject = sheet; // store the actual sheet into sheetObject to be able to access it with keybinding combination
   const actionName = "textToClipboard";
-  buttons.push({
-    icon: "fa-solid fa-clipboard",
-    label: game.i18n.localize("QJPC.controls.clipboard.label"),
-    action: actionName,
-    class: "qjpc",
-    visible: true,
 
-  });
+  let settings = getSettings();
+
+  if (settings.isClipboard) {
+    buttons.push({
+      icon: "fa-solid fa-clipboard",
+      label: game.i18n.localize("QJPC.controls.clipboard.label"),
+      action: actionName,
+      class: "qjpc",
+      visible: true,
+
+    });
+  }
+
+  if (settings.isToFile) {
+    buttons.push({
+      icon: "fa-solid fa-floppy-o",
+      label: game.i18n.localize("QJPC.controls.saveAs.label"),
+      action: actionName,
+      class: "qjpc",
+      visible: true,
+
+    });
+  }
+
+  if (settings.isToPrinter) {
+    buttons.push({
+      icon: "fa-solid fa-print",
+      label: game.i18n.localize("QJPC.controls.print.label"),
+      action: actionName,
+      class: "qjpc",
+      visible: true,
+
+    });
+  }
+
+
 
 
   //if the action does not yet exist create it
@@ -369,7 +401,7 @@ async function getClipboardText(sheet) {
     if (settings.isToPrinter) {
       //openPrintWindow(text, !!settings.isHTML);
       console.log("QST: To Printer")
-      const popup = new PrintPopup();
+      const popup = new PrintPopup(text, settings);
       popup.render({ force: true });
       //openPrintWindow(text);
     }

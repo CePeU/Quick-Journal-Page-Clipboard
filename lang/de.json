@@ -48,5 +48,8 @@
   "QJPC.settings.outputChannel.hint": "Wohin soll der Export stattfinden. Standard ist die Zwischenablage.",
   "QJPC.settings.channelClibboard.name": "Zwischenablage",
   "QJPC.settings.channelFile.name": "Datei export",
-  "QJPC.settings.channelPrint.name": "Ausdrucken"
+  "QJPC.settings.channelPrint.name": "Ausdrucken",
+  "QJPC.windows.printPreview": "Druck Vorschau",
+  "QJPC.controls.print.label": "Ausdrucken",
+  "QJPC.controls.saveAs.label": "Speichern"
 }

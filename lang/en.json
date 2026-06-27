@@ -48,5 +48,8 @@
   "QJPC.settings.outputChannel.hint": "To which destination the exportet text shall be exported to. Standard is the clipboard.",
   "QJPC.settings.channelClibboard.name": "Clipboard",
   "QJPC.settings.channelFile.name": "File export",
-  "QJPC.settings.channelPrint.name": "To Printer"
+  "QJPC.settings.channelPrint.name": "To Printer",
+  "QJPC.windows.printPreview": "Print preview",
+  "QJPC.controls.print.label": "Print",
+  "QJPC.controls.saveAs.label": "Save as file"
 }
