@@ -5,10 +5,134 @@ import { convertHtmlToMarkdown } from "./render-markdown.js";
 import { createSettings, getSettings } from "./settings.js";
 import { imageToBase64, convertPageImagesToBase64 } from "./render-html.js";
 import PrintPopup from "./printModal.js";
-import { createKeybinds } from "./settings-keybinds.js";
-
+//import { createKeybinds } from "./settings-keybinds.js";
+const MODULE_ID = "quick-journal-page-clipboard"
 
 let sheetObject = null;
+
+export function createKeybinds(settings) {
+    game.keybindings.register(MODULE_ID, "showNotification", {
+        name: "Copy to clipboard",
+        hint: "The keybinding will copy the text of the currently visible page or multipage to the clipboard. Journal/Page needs to be the topmost window.",
+        editable: [
+            {
+                key: "KeyC",
+                modifiers: ["Control", "Alt"]
+            }
+        ],
+        restricted: false,             // Restrict this Keybinding to gamemaster only?
+        onDown: async () => {
+
+            // Check if a journal sheet is currently open and on TOP (not focused) - this does not allways play any role as sheetObject can be filled allready
+            // but it will irritate the user if he can fill the clipboard anyway if no journal is open
+            if (!sheetObject) {
+                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+                return;
+            }
+            const isAJournalCurrentlyActive = getAbsoluteTopJournal();
+            //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
+
+            // Only go on if there is a journal currently opened and on top
+            if (!isAJournalCurrentlyActive) {
+                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+                return;
+            }
+
+            try {
+                await game.settings.set(MODULE_ID, "outputChannel", "Clipboard")
+                await getClipboardText(sheetObject);
+            } catch (error) {
+                console.error(game.i18n.localize("QJPC.warning.error"), error);
+                ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
+            }
+        },
+        //onUp: () => {},
+        //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
+        precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+    });
+
+    game.keybindings.register(MODULE_ID, "print", {
+        name: "Print",
+        hint: "The keybinding will print the text of the currently visible page or multipage to the printer. Journal/Page needs to be the topmost window.",
+        editable: [
+            {
+                key: "KeyP",
+                modifiers: ["Control", "Alt"]
+            }
+        ],
+        restricted: false,             // Restrict this Keybinding to gamemaster only?
+        onDown: async () => {
+
+            // Check if a journal sheet is currently open and on TOP (not focused) - this does not allways play any role as sheetObject can be filled allready
+            // but it will irritate the user if he can fill the clipboard anyway if no journal is open
+            if (!sheetObject) {
+                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+                return;
+            }
+            const isAJournalCurrentlyActive = getAbsoluteTopJournal();
+            //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
+
+            // Only go on if there is a journal currently opened and on top
+            if (!isAJournalCurrentlyActive) {
+                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+                return;
+            }
+
+            try {
+                await game.settings.set(MODULE_ID, "outputChannel", "toPrinter")
+                await getClipboardText(sheetObject);
+            } catch (error) {
+                console.error(game.i18n.localize("QJPC.warning.error"), error);
+                ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
+            }
+        },
+        //onUp: () => {},
+        //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
+        precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+    });
+
+    game.keybindings.register(MODULE_ID, "downloadFile", {
+        name: "Download to File",
+        hint: "The keybinding will download the text of the currently visible page or multipage to the filesystem. Journal/Page needs to be the topmost window.",
+        editable: [
+            {
+                key: "KeyF",
+                modifiers: ["Control", "Alt"]
+            }
+        ],
+        restricted: false,             // Restrict this Keybinding to gamemaster only?
+        onDown: async () => {
+
+            // Check if a journal sheet is currently open and on TOP (not focused) - this does not allways play any role as sheetObject can be filled allready
+            // but it will irritate the user if he can fill the clipboard anyway if no journal is open
+            if (!sheetObject) {
+                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+                return;
+            }
+            const isAJournalCurrentlyActive = getAbsoluteTopJournal();
+            //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
+
+            // Only go on if there is a journal currently opened and on top
+            if (!isAJournalCurrentlyActive) {
+                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+                return;
+            }
+
+            try {
+                await game.settings.set(MODULE_ID, "outputChannel", "toFile")
+                await getClipboardText(sheetObject);
+            } catch (error) {
+                console.error(game.i18n.localize("QJPC.warning.error"), error);
+                ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
+            }
+        },
+        //onUp: () => {},
+        //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
+        precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+    });
+
+}
+
 
 
 Hooks.once("init", () => {
@@ -90,10 +214,19 @@ Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
 
   let settings = getSettings();
 
+let sufix =" (Text)"
+  if(settings.isHTML){
+sufix=" (HTML)"
+  }
+  if(settings.isMarkdown){
+sufix=" (MD)"
+  }
+
+
   if (settings.isClipboard) {
     buttons.push({
       icon: "fa-solid fa-clipboard",
-      label: game.i18n.localize("QJPC.controls.clipboard.label"),
+      label: game.i18n.localize("QJPC.controls.clipboard.label")+sufix,
       action: actionName,
       class: "qjpc",
       visible: true,
@@ -103,8 +236,8 @@ Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
 
   if (settings.isToFile) {
     buttons.push({
-      icon: "fa-solid fa-floppy-o",
-      label: game.i18n.localize("QJPC.controls.saveAs.label"),
+      icon: "fa-solid fa-download",
+      label: game.i18n.localize("QJPC.controls.saveAs.label")+sufix,
       action: actionName,
       class: "qjpc",
       visible: true,
@@ -115,7 +248,7 @@ Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
   if (settings.isToPrinter) {
     buttons.push({
       icon: "fa-solid fa-print",
-      label: game.i18n.localize("QJPC.controls.print.label"),
+      label: game.i18n.localize("QJPC.controls.print.label")+sufix,
       action: actionName,
       class: "qjpc",
       visible: true,
@@ -395,7 +528,7 @@ async function getClipboardText(sheet) {
     if (settings.isToFile) {
       console.log("QST: To File")
       //await saveTextToFile(text, settings.fileName || 'output.txt');
-      await saveTextToFile(text, settings.fileName || 'd:output.txt');
+      await saveTextToFile(text, settings);
     }
 
     if (settings.isToPrinter) {
@@ -518,15 +651,42 @@ function exportChannel() {
   }
 }*/
 
-async function saveTextToFile(text, fileName) {
+async function saveTextToFile(text,settings, fileName) {
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+
+let sufix=".txt"
+  if(settings.isHTML){
+sufix=".html"
+  }
+  if(settings.isMarkdown){
+sufix=".md"
+  }
+fileName = settings.fileName || "clipboard"+sufix;
+/*
+  if ("showSaveFilePicker" in window) {
+    const handle = await window.showSaveFilePicker({
+      suggestedName: fileName ?? "clipboard"+sufix,
+      types: [
+        {
+          description: "Text files",
+          accept: { "text/plain": [".txt",".md",".html"] },
+        },
+      ],
+    });
+
+    const writable = await handle.createWritable();
+    await writable.write(blob);
+    await writable.close();
+    return;
+  }*/
+
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
   a.download = fileName;
-  a.style.display = 'none';
-  document.body.appendChild(a);
+  //a.style.display = 'none';
+  //document.body.appendChild(a);
   a.click();
   a.remove();
 

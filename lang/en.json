@@ -51,5 +51,7 @@
   "QJPC.settings.channelPrint.name": "To Printer",
   "QJPC.windows.printPreview": "Print preview",
   "QJPC.controls.print.label": "Print",
-  "QJPC.controls.saveAs.label": "Save as file"
+  "QJPC.controls.saveAs.label": "Save as file",
+  "QJPC.settings.fileName.name":"Filenamen",
+  "QJPC.settings.fileName.hint":"Please input ONLY the file name and NO file path for the file export option."
 }

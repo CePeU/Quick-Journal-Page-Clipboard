@@ -25,6 +25,16 @@ export function createSettings() {
     restricted: false
   });
 
+    game.settings.register(MODULE_ID, "fileName", {
+    name: game.i18n.localize("QJPC.settings.fileName.name"),
+    hint: game.i18n.localize("QJPC.settings.fileName.hint"),
+    scope: "user",
+    config: true,
+    type: String,
+    default: "",
+    restricted: false
+  });
+
   game.settings.register(MODULE_ID, "removeGMSecrets", {
     name: game.i18n.localize("QJPC.settings.removeGMSecrets.name"),
     hint: game.i18n.localize("QJPC.settings.removeGMSecrets.hint"),
@@ -359,6 +369,7 @@ export function getSettings() {
   const isPageTitle = game.settings.get(MODULE_ID, "isPageTitle");
   const radioButtonFormat = game.settings.get(MODULE_ID, "outputFormat");
   const radioButtonChannel = game.settings.get(MODULE_ID, "outputChannel");
+  const fileName = game.settings.get(MODULE_ID,"fileName");
   const isRenderNoteCallout = game.settings.get(MODULE_ID, "isDetailsTagObsidianCallout");
   const isRenderSecretCallout = game.settings.get(MODULE_ID, "isSecretObsidianCallout");
   const isRenderInfoCallout = game.settings.get(MODULE_ID, "isBlockQuoteObsidianCallout");
@@ -378,6 +389,7 @@ export function getSettings() {
   const isToPrinter = radioButtonChannel === "toPrinter";
   const isToFile = radioButtonChannel === "toFile";
   const isClipboard = radioButtonChannel === "clipboard";
+
 
   const settings =
   {
@@ -403,7 +415,8 @@ export function getSettings() {
     isPictureEncode: isBase64Picture,
     isClipboard: isClipboard,
     isToPrinter: isToPrinter,
-    isToFile: isToFile
+    isToFile: isToFile,
+    fileName: fileName
   }
 
   return settings

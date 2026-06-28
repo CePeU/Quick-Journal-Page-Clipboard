@@ -51,5 +51,7 @@
   "QJPC.settings.channelPrint.name": "Ausdrucken",
   "QJPC.windows.printPreview": "Druck Vorschau",
   "QJPC.controls.print.label": "Ausdrucken",
-  "QJPC.controls.saveAs.label": "Speichern"
+  "QJPC.controls.saveAs.label": "Speichern",
+  "QJPC.settings.fileName.name":"Dateinamen",
+  "QJPC.settings.fileName.hint":"Bitte nur den Dateinamen OHNE Dateipfad für den Dateiexport eingeben."
 }
