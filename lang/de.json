@@ -53,5 +53,7 @@
   "QJPC.controls.print.label": "Ausdrucken",
   "QJPC.controls.saveAs.label": "Speichern",
   "QJPC.settings.fileName.name":"Dateinamen",
-  "QJPC.settings.fileName.hint":"Bitte nur den Dateinamen OHNE Dateipfad für den Dateiexport eingeben."
+  "QJPC.settings.fileName.hint":"Bitte nur den Dateinamen OHNE Dateipfad für den Dateiexport eingeben.",
+  "QJPC.notifications.fileDownload": "Journal text wurde gespeichert.",
+  "QJPC.notifications.print":"Journal wurde an den Drucker geschickt."
 }

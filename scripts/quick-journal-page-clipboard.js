@@ -520,15 +520,21 @@ async function getClipboardText(sheet) {
   }
 
   try {
+    if (text !== "") {
     if (settings.isClipboard) {
       console.log("QST: To Clipboard")
       await navigator.clipboard.writeText(text);
+      ui.notifications.info(game.i18n.localize("QJPC.notifications.copied"))
     }
 
     if (settings.isToFile) {
       console.log("QST: To File")
       //await saveTextToFile(text, settings.fileName || 'output.txt');
+      
       await saveTextToFile(text, settings);
+      //TODO: Remove or bind notification to save button
+      //ui.notifications.info(game.i18n.localize("QJPC.notifications.fileDownload"));
+    
     }
 
     if (settings.isToPrinter) {
@@ -536,13 +542,16 @@ async function getClipboardText(sheet) {
       console.log("QST: To Printer")
       const popup = new PrintPopup(text, settings);
       popup.render({ force: true });
-      //openPrintWindow(text);
+      //TODO: Remove or bind notification to print button
+      //ui.notifications.info(game.i18n.localize("QJPC.notifications.print"));
+      
     }
+  }
   } catch (error) {
-    console.error('Output handler failed:', error);
+    console.error('Output channel could not be opened:', error);
   }
 
-  if (text !== "") { ui.notifications.info(game.i18n.localize("QJPC.notifications.copied")); }
+  //if (text !== "") { ui.notifications.info(game.i18n.localize("QJPC.notifications.copied")); }
 };
 
 function replaceImgSrcPaths(doc, searchForPart, replaceWidthPath) {
@@ -652,8 +661,11 @@ function exportChannel() {
 }*/
 
 async function saveTextToFile(text,settings, fileName) {
+  // create the data blob from the text
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
 
+//create the suffix
+//TODO: deconstruct suffix and replace with correct suffix for more automation
 let sufix=".txt"
   if(settings.isHTML){
 sufix=".html"
@@ -680,17 +692,22 @@ fileName = settings.fileName || "clipboard"+sufix;
     return;
   }*/
 
-  const url = URL.createObjectURL(blob);
+    // Create an element to trigger the download
+  const url = window.URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
   a.download = fileName;
-  //a.style.display = 'none';
-  //document.body.appendChild(a);
-  a.click();
-  a.remove();
 
-  URL.revokeObjectURL(url);
+//  a.click();
+//  a.remove();
+//URL.revokeObjectURL(url);
+  
+// Dispatch a click event to the element
+// this should be more robust for older browsers/networks than above
+    a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+    return new Promise(resolve => setTimeout(() => { window.URL.revokeObjectURL(a.href); resolve()}, 100));
+
 }
 
 function openPrintWindow(content, isHTML = false) {

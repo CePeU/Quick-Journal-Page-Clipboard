@@ -53,5 +53,7 @@
   "QJPC.controls.print.label": "Print",
   "QJPC.controls.saveAs.label": "Save as file",
   "QJPC.settings.fileName.name":"Filenamen",
-  "QJPC.settings.fileName.hint":"Please input ONLY the file name and NO file path for the file export option."
+  "QJPC.settings.fileName.hint":"Please input ONLY the file name and NO file path for the file export option.",
+  "QJPC.notifications.fileDownload": "Journal text was saved.",
+  "QJPC.notifications.print":"Journal has been sent to the printer."
 }
