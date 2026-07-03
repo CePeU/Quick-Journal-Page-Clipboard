@@ -1,166 +1,32 @@
-//CONFIG.debug.hooks = true
-//console.log("QJPC: Module Quick-Journal-Page-Clippboard has started");
 
+//TODO: restructure trannslations to nested JSON AND to automatic settings translation for name and hint
+// new settings setup is possible:
+// {Scope}.settings.{SettingSubkey}.Name
+// {Scope}.settings.{SettingSubkey}.Hint
+
+/* JSON structure for this 
+{
+  "quick-journal-page-clipboard": {
+    "settings": {
+      "returnMDtext": {
+        "Name": "Return Markdown Text",
+        "Hint": "If enabled, text copied from the journal will maintain its Markdown formatting."
+      }
+    }
+  }
+}
+*/
+// now name and hint can be removed as propperties
+
+import { createSettings, getSettings, MODULE_ID } from "./settings.js";
 import { convertHtmlToMarkdown } from "./render-markdown.js";
-import { createSettings, getSettings } from "./settings.js";
-import { imageToBase64, convertPageImagesToBase64 } from "./render-html.js";
+import { convertPageImagesToBase64 } from "./render-html.js";
 import PrintPopup from "./printModal.js";
-//import { createKeybinds } from "./settings-keybinds.js";
-const MODULE_ID = "quick-journal-page-clipboard"
 
 let sheetObject = null;
 
 export function createKeybinds(settings) {
-    game.keybindings.register(MODULE_ID, "showNotification", {
-        name: "Copy to clipboard",
-        hint: "The keybinding will copy the text of the currently visible page or multipage to the clipboard. Journal/Page needs to be the topmost window.",
-        editable: [
-            {
-                key: "KeyC",
-                modifiers: ["Control", "Alt"]
-            }
-        ],
-        restricted: false,             // Restrict this Keybinding to gamemaster only?
-        onDown: async () => {
-
-            // Check if a journal sheet is currently open and on TOP (not focused) - this does not allways play any role as sheetObject can be filled allready
-            // but it will irritate the user if he can fill the clipboard anyway if no journal is open
-            if (!sheetObject) {
-                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
-                return;
-            }
-            const isAJournalCurrentlyActive = getAbsoluteTopJournal();
-            //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
-
-            // Only go on if there is a journal currently opened and on top
-            if (!isAJournalCurrentlyActive) {
-                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
-                return;
-            }
-
-            try {
-                await game.settings.set(MODULE_ID, "outputChannel", "Clipboard")
-                await getClipboardText(sheetObject);
-            } catch (error) {
-                console.error(game.i18n.localize("QJPC.warning.error"), error);
-                ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
-            }
-        },
-        //onUp: () => {},
-        //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
-        precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
-    });
-
-    game.keybindings.register(MODULE_ID, "print", {
-        name: "Print",
-        hint: "The keybinding will print the text of the currently visible page or multipage to the printer. Journal/Page needs to be the topmost window.",
-        editable: [
-            {
-                key: "KeyP",
-                modifiers: ["Control", "Alt"]
-            }
-        ],
-        restricted: false,             // Restrict this Keybinding to gamemaster only?
-        onDown: async () => {
-
-            // Check if a journal sheet is currently open and on TOP (not focused) - this does not allways play any role as sheetObject can be filled allready
-            // but it will irritate the user if he can fill the clipboard anyway if no journal is open
-            if (!sheetObject) {
-                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
-                return;
-            }
-            const isAJournalCurrentlyActive = getAbsoluteTopJournal();
-            //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
-
-            // Only go on if there is a journal currently opened and on top
-            if (!isAJournalCurrentlyActive) {
-                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
-                return;
-            }
-
-            try {
-                await game.settings.set(MODULE_ID, "outputChannel", "toPrinter")
-                await getClipboardText(sheetObject);
-            } catch (error) {
-                console.error(game.i18n.localize("QJPC.warning.error"), error);
-                ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
-            }
-        },
-        //onUp: () => {},
-        //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
-        precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
-    });
-
-    game.keybindings.register(MODULE_ID, "downloadFile", {
-        name: "Download to File",
-        hint: "The keybinding will download the text of the currently visible page or multipage to the filesystem. Journal/Page needs to be the topmost window.",
-        editable: [
-            {
-                key: "KeyF",
-                modifiers: ["Control", "Alt"]
-            }
-        ],
-        restricted: false,             // Restrict this Keybinding to gamemaster only?
-        onDown: async () => {
-
-            // Check if a journal sheet is currently open and on TOP (not focused) - this does not allways play any role as sheetObject can be filled allready
-            // but it will irritate the user if he can fill the clipboard anyway if no journal is open
-            if (!sheetObject) {
-                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
-                return;
-            }
-            const isAJournalCurrentlyActive = getAbsoluteTopJournal();
-            //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
-
-            // Only go on if there is a journal currently opened and on top
-            if (!isAJournalCurrentlyActive) {
-                ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
-                return;
-            }
-
-            try {
-                await game.settings.set(MODULE_ID, "outputChannel", "toFile")
-                await getClipboardText(sheetObject);
-            } catch (error) {
-                console.error(game.i18n.localize("QJPC.warning.error"), error);
-                ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
-            }
-        },
-        //onUp: () => {},
-        //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
-        precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
-    });
-
-}
-
-
-
-Hooks.once("init", () => {
-
-
-  //TODO: restructure trannslations to nested JSON AND to automatic settings translation for name and hint
-  // new settings setup is possible:
-  // {Scope}.settings.{SettingSubkey}.Name
-  // {Scope}.settings.{SettingSubkey}.Hint
-
-  /* JSON structure for this 
-  {
-    "quick-journal-page-clipboard": {
-      "settings": {
-        "returnMDtext": {
-          "Name": "Return Markdown Text",
-          "Hint": "If enabled, text copied from the journal will maintain its Markdown formatting."
-        }
-      }
-    }
-  }
-  */
-  // now name and hint can be removed as propperties
-  createSettings()
-  const settings = getSettings()
-  createKeybinds(settings)
-  /*
-  game.keybindings.register("quick-journal-page-clipboard", "showNotification", {
+  game.keybindings.register(MODULE_ID, "showNotification", {
     name: "Copy to clipboard",
     hint: "The keybinding will copy the text of the currently visible page or multipage to the clipboard. Journal/Page needs to be the topmost window.",
     editable: [
@@ -179,25 +45,100 @@ Hooks.once("init", () => {
         return;
       }
       const isAJournalCurrentlyActive = getAbsoluteTopJournal();
-      //console.log("QJPC: top window: ",isAJournalCurrentlyActive)
 
-      // Only go on if tere is a journal currently opened and on top
+      // Only go on if there is a journal currently opened and on top
       if (!isAJournalCurrentlyActive) {
         ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
         return;
       }
 
       try {
+        await game.settings.set(MODULE_ID, "outputChannel", "clipboard")
         await getClipboardText(sheetObject);
       } catch (error) {
         console.error(game.i18n.localize("QJPC.warning.error"), error);
         ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
       }
     },
-    //onUp: () => {},
+    //onUp: () => {}, // Keep as reminder what can be done
     //reservedModifiers: ["Alt"],  // On ALT, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
-  });*/
+  });
+
+  game.keybindings.register(MODULE_ID, "print", {
+    name: "Print",
+    hint: "The keybinding will print the text of the currently visible page or multipage to the printer. Journal/Page needs to be the topmost window.",
+    editable: [
+      {
+        key: "KeyP",
+        modifiers: ["Control", "Alt"]
+      }
+    ],
+    restricted: false,
+    onDown: async () => {
+
+      if (!sheetObject) {
+        ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+        return;
+      }
+      const isAJournalCurrentlyActive = getAbsoluteTopJournal();
+      if (!isAJournalCurrentlyActive) {
+        ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+        return;
+      }
+
+      try {
+        await game.settings.set(MODULE_ID, "outputChannel", "toPrinter")
+        await getClipboardText(sheetObject);
+      } catch (error) {
+        console.error(game.i18n.localize("QJPC.warning.error"), error);
+        ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
+      }
+    },
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  });
+
+  game.keybindings.register(MODULE_ID, "downloadFile", {
+    name: "Download to File",
+    hint: "The keybinding will download the text of the currently visible page or multipage to the filesystem. Journal/Page needs to be the topmost window.",
+    editable: [
+      {
+        key: "KeyF",
+        modifiers: ["Control", "Alt"]
+      }
+    ],
+    restricted: false,
+    onDown: async () => {
+      if (!sheetObject) {
+        ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+        return;
+      }
+      const isAJournalCurrentlyActive = getAbsoluteTopJournal();
+      if (!isAJournalCurrentlyActive) {
+        ui.notifications.warn(game.i18n.localize("QJPC.notifications.noJournalOpen"));
+        return;
+      }
+
+      try {
+        await game.settings.set(MODULE_ID, "outputChannel", "toFile")
+        await getClipboardText(sheetObject);
+      } catch (error) {
+        console.error(game.i18n.localize("QJPC.warning.error"), error);
+        ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
+      }
+    },
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  });
+
+}
+
+
+
+Hooks.once("init", () => {
+
+  createSettings()
+  const settings = getSettings()
+  createKeybinds(settings)
 
   console.log("QJPC: Module Quick-Journal-Page-Clippboard has started")
 });
@@ -208,25 +149,25 @@ Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
   const isJournal = sheet?.document?.documentName ?? "noJournal";
 
   if (!sheet.document || isJournal !== "JournalEntry") { return; };
-  //console.log("qjpc: Sheet: ",sheet)
-  sheetObject = sheet; // store the actual sheet into sheetObject to be able to access it with keybinding combination
+
+  sheetObject = sheet; // store the actual sheet into the global sheetObject to be able to access it with keybinding combination
   const actionName = "textToClipboard";
 
   let settings = getSettings();
 
-let sufix =" (Text)"
-  if(settings.isHTML){
-sufix=" (HTML)"
+  let sufix = " (Text)"
+  if (settings.isHTML) {
+    sufix = " (HTML)"
   }
-  if(settings.isMarkdown){
-sufix=" (MD)"
+  if (settings.isMarkdown) {
+    sufix = " (MD)"
   }
 
 
   if (settings.isClipboard) {
     buttons.push({
       icon: "fa-solid fa-clipboard",
-      label: game.i18n.localize("QJPC.controls.clipboard.label")+sufix,
+      label: game.i18n.localize("QJPC.controls.clipboard.label") + sufix,
       action: actionName,
       class: "qjpc",
       visible: true,
@@ -237,7 +178,7 @@ sufix=" (MD)"
   if (settings.isToFile) {
     buttons.push({
       icon: "fa-solid fa-download",
-      label: game.i18n.localize("QJPC.controls.saveAs.label")+sufix,
+      label: game.i18n.localize("QJPC.controls.saveAs.label") + sufix,
       action: actionName,
       class: "qjpc",
       visible: true,
@@ -248,7 +189,7 @@ sufix=" (MD)"
   if (settings.isToPrinter) {
     buttons.push({
       icon: "fa-solid fa-print",
-      label: game.i18n.localize("QJPC.controls.print.label")+sufix,
+      label: game.i18n.localize("QJPC.controls.print.label") + sufix,
       action: actionName,
       class: "qjpc",
       visible: true,
@@ -278,18 +219,12 @@ async function exportJournalText(sheet) {
   } else {
     const parts = [];
 
-
     const settings = getSettings()
-    //const styleCSS = game.settings.get("quick-journal-page-clipboard", "htmlStyleTag");
-    //const isPageTitle = game.settings.get("quick-journal-page-clipboard", "isPageTitle");
-    //const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
-    //const isMarkdown = radioButtonFormat === "markdown";
-    //const isHTML = radioButtonFormat === "html";
-
-    console.log("QJPC: settings ", settings)
+    //console.log("QJPC: settings ", settings)
     for (const p of exportPages) {
       let text = "";
-      //console.log("qjpc: Title: ",p.name)
+
+      //Set a page title for html, markdown and plain text
       if (settings.isPageTitle) {
         if (settings.isHTML || settings.isMarkdown) {
           text = text + "<h1>" + p.name + "</h1>" + "</br>" + "\n" + "</br>" + "\n";
@@ -305,17 +240,8 @@ async function exportJournalText(sheet) {
 
     let exportText = parts.join("\n\n")
 
-    if (settings.isHTML) {
-      if (settings.isHeader) {
-        exportText = exportText + settings.headerHTML
-      }
-      if (settings.isCSS) {
-        exportText = "<style>" + settings.css + "</style>" + exportText
-      }
-      if (settings.isFooter) {
-        exportText = exportText + settings.footerHTML
-      }
-    }
+    //Do export HTML kind here depending on export save or print
+
 
 
     return exportText;
@@ -325,8 +251,8 @@ async function exportJournalText(sheet) {
 function getPagesToExport(sheet, activePages) {
   const isMultiple = sheet.isMultiple //check for multi page view
   const settings = getSettings();
-  //const isLimited = game.settings.get("quick-journal-page-clipboard", "allowExportForLimitedUserRights")
-  const user = game.user; //gets the user currently using this function to check for permissions of pages collected
+  const user = game.user;
+  //gets the user currently using this function to check for permissions of pages collected
   // filter all pages which the user cannot see/access which starts from limited level 
   // ==> BUt limited level can be system agnostic so standard is Oberver
   let permissionRoleAllowed = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
@@ -338,9 +264,9 @@ function getPagesToExport(sheet, activePages) {
   );
 
   let sorted = allowedPages.sort((a, b) => a.sort - b.sort);
-  let returnFinalPages = sorted.filter(p => isTextPage(p)) //filter any pages which are not text like PDF and IMAGE
+  let returnFinalPages = sorted.filter(p => isTextPage(p)) //filter out any pages which are not text like PDF and IMAGE
 
-  //console.log ("qjpc: Pages to process: ",returnFinalPages)
+  //console.log ("QJPC: Pages to process: ",returnFinalPages)
   if (isMultiple) {
     return returnFinalPages;
   } else {
@@ -362,52 +288,51 @@ function isTextPage(page) {
 
 async function extractPlainTextFromPage(page) {
   // get the html from the page
-  const html = page.text?.content ?? "";
+  //console.log("QJPC: Original Object Sheet: ", page)
+  let html = page.text?.content ?? "";
+  //Foundry saves the HTML in different "formats". Normally it is stripped of line feeds but sometimes it is with line feeds
+  //this might be a client/server syncing problem or a problem if HTML is inserted directly and manually either way it needs
+  //to be normalized
+  const cleaned = html.replace(/[\r\n]+/g, "");
+  html = cleaned;
   // create a DOM element
   const doc = new DOMParser().parseFromString(html, "text/html");
 
   // remove all script and style elements - this is not necessary keeping it as reminder
   //doc.querySelectorAll("script, style").forEach(el => el.remove());
 
-  // remove all section tag elements with class "secret" if setting is enabled
-  //let removeSecretsGlobal = game.settings.get("quick-journal-page-clipboard", "removeGMSecrets");
-  //let removeSecretsForGM = game.settings.get("quick-journal-page-clipboard", "secretsForGM")
-
   const settings = getSettings()
 
-  //console.log("QJPC: Remove Secret global: ",removeSecretsGlobal)
-  // console.log("QJPC: Remove Secret for GM: ",removeSecretsForGM)
-  // console.log("QJPC: Is a GM", game.user.isGM)
-
-  //if(!removeSecretsForGM){
-  //  console.log("QJPC: GM Secret will be removed: ",removeSecretsForGM)
-  //if (removeSecretsGlobal) {
-  //  console.log("QJPC: GM Secret will be removed: ",removeSecretsGlobal)
-  //   doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
-  //  }
-  //}
-
+  //Secrets will be removed for all unless the user is the GM
   if (settings.isRemoveSecretsForAllPlayers && !game.user.isGM) {
-    //console.log("QJPC:- Secret will be removed for all: ",removeSecretsGlobal)
     doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
   }
 
+  //Secrets will be removed for GM unless otherwise stated in settings
   if (game.user.isGM && settings.isRemoveSecretsForGM) {
-    //console.log("QJPC:- Secret will be removed for GM: ",removeSecretsGlobal)
     doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
   }
+
+  //remove all DOM elements which have an empty innerHTML unless they are on the keep list
+
+  /*
+  if (settings.isEmptyLine) {
+    const keepTags = new Set([
+      "br", "hr", "img", "input", "meta", "link", "source", "track", "wbr",
+      "base", "area", "col", "embed", "param"
+    ]);
+
+    doc.querySelectorAll("*").forEach(el => {
+      if (!keepTags.has(el.tagName.toLowerCase()) && el.innerHTML.trim() === "") {
+        el.remove();
+      }
+    });
+  }*/
+
+  // extract text from html
 
   let resultingText = "";
-
-  //const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
-  //const isMarkdown = radioButtonFormat === "markdown";
-  //const isHTML = radioButtonFormat === "html";
-  //const isCuratedText = game.settings.get("quick-journal-page-clipboard", "isCuratedText");
-  //const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
-
-  //const searchPathFor = game.settings.get("quick-journal-page-clipboard", "picturePathSearchFor")  ?? "";
-  //const replacePathWith =game.settings.get("quick-journal-page-clipboard", "picturePathReplaceWith")  ?? "";
-
+  console.log("QJPC: Settings: ", settings)
   switch (true) {
     case settings.isHTML:
       if (settings.isPictureEncode) {
@@ -415,9 +340,11 @@ async function extractPlainTextFromPage(page) {
       } else {
         //TODO: do a isSearchPath setting and isReplacePath
         if (settings.searchForPath.length > 0 && settings.replaceWidthPath.length > 0) {
+          //TODO: ASYNC replpace Paths? and await?
           replaceImgSrcPaths(doc, settings.searchForPath, settings.replaceWidthPath)
         }
       }
+
       resultingText = doc.body.innerHTML || "";
       break;
 
@@ -426,16 +353,30 @@ async function extractPlainTextFromPage(page) {
       break;
 
     case settings.isCuratedText:
-      resultingText = normalizeText(doc.body.innerText || "");
+      //innerText is what the user can actually see on the page (so hidden is not entailed)
+      //innerText is affected by css and linebreaks
+      resultingText = domToPlainText(doc, true)
+      //console.log("QJPC: Dom to Plain Text: ", resultingText)
+      //resultingText = resultingText.trim()
+      console.log("QJPC: Dom to Plain Text curated: ", resultingText)
+
+      //remove any lines which are empty after trim or are left over
       if (settings.isEmptyLine) {
+        //resultingText = domToPlainText(doc, false)
         resultingText = resultingText.replace(/^\s*\n/gm, ""); // remove lines that are empty or only whitespace
+        console.log("QJPC: Dom to Plain Text curated DELETED: ", resultingText)
       }
       break;
 
     default:
-      resultingText = doc.body.textContent || "";
+      //everything that is as text in the DOM
+      // no css and line breaks
+      resultingText = domToPlainText(doc, false)
+      console.log("QJPC: Non curated: ", resultingText)
       if (settings.isEmptyLine) {
+        //resultingText = domToPlainText(doc, false)
         resultingText = resultingText.replace(/^\s*\n/gm, ""); // remove lines that are empty or only whitespace
+        console.log("QJPC: Non curated DELETED: ", resultingText)
       }
       break;
   }
@@ -443,6 +384,8 @@ async function extractPlainTextFromPage(page) {
 }
 
 function normalizeText(text) {
+  console.log("QJPC: Normalize Text: ", text)
+  console.log("QJPC: Normalize Text and Manuall TRIM: ", text.trim())
   return text
     .replace(/\r\n/g, "\n")           // normalize line endings
     //.replace(/^\s*\n/gm, "")          // remove lines that are empty or only whitespace
@@ -495,63 +438,78 @@ function getAbsoluteTopJournal() {
 }
 
 async function getClipboardText(sheet) {
-
   const settings = getSettings()
-  //const calloutSettings = {
-  //  isRenderNoteCallout: game.settings.get("quick-journal-page-clipboard", "isDetailsTagObsidianCallout"),
-  //  isRenderInfoCallout: game.settings.get("quick-journal-page-clipboard", "isBlockQuoteObsidianCallout"),
-  //  isRenderSecretCallout: game.settings.get("quick-journal-page-clipboard", "isSecretObsidianCallout")
-  //}
-
-
-  //const radioButtonFormat = game.settings.get("quick-journal-page-clipboard", "outputFormat");
-  //const isMarkdown = radioButtonFormat === "markdown";
-
-
-  //const isEmptyLine = game.settings.get("quick-journal-page-clipboard", "isEmptyLineText");
   let text = await exportJournalText(sheet);
+
   if (settings.isMarkdown) {
-    text = await convertHtmlToMarkdown(text, settings);//,calloutSettings);
+    text = await convertHtmlToMarkdown(text, settings);//render HTML to markdown and also the callouts
     if (settings.isEmptyLine) {
       text = text.replace(/^\s*\n/gm, "");
+      //The following fixes the global deletion of empty lines if a callout afterwards  follows another callout
       const regex = /^(> (?!\[!).+)(\r?\n)(> \[!.+)/gm; //Regex to look for > xxx /n/n and then > [! and put a new line in between
       text = text.replaceAll(regex, '$1$2$2$3'); // This way two Obsidian Callout Blocks stay seperated even if the empty lines have been deleted between them
     }
   }
 
-  try {
-    if (text !== "") {
-    if (settings.isClipboard) {
-      console.log("QST: To Clipboard")
-      await navigator.clipboard.writeText(text);
-      ui.notifications.info(game.i18n.localize("QJPC.notifications.copied"))
-    }
+  //Adjust HTML with Header, Style and Footer
+
+  if (settings.isHTML) {
 
     if (settings.isToFile) {
-      console.log("QST: To File")
-      //await saveTextToFile(text, settings.fileName || 'output.txt');
-      
-      await saveTextToFile(text, settings);
-      //TODO: Remove or bind notification to save button
-      //ui.notifications.info(game.i18n.localize("QJPC.notifications.fileDownload"));
-    
+      let exportText = ""
+      if (settings.isCSS) {
+        exportText += "<style>" + settings.css + "</style>"
+      }
+
+      if (settings.isHeader) {
+        exportText += settings.headerHTML
+      }
+
+      exportText += text
+
+      if (settings.isFooter) {
+        exportText += settings.footerHTML
+      }
+
+      text = exportText
     }
 
-    if (settings.isToPrinter) {
-      //openPrintWindow(text, !!settings.isHTML);
-      console.log("QST: To Printer")
-      const popup = new PrintPopup(text, settings);
-      popup.render({ force: true });
-      //TODO: Remove or bind notification to print button
-      //ui.notifications.info(game.i18n.localize("QJPC.notifications.print"));
-      
+    if (settings.isEmptyLine) {
+      //TODO: Remove empty p and div tags
     }
+
+
+
   }
+
+  try {
+    if (text !== "") {
+      if (settings.isClipboard) {
+        await navigator.clipboard.writeText(text);
+        ui.notifications.info(game.i18n.localize("QJPC.notifications.copied"))
+      }
+
+      if (settings.isToFile) {
+        await saveTextToFile(text, settings);
+        //TODO: Remove or bind notification to save button
+        //ui.notifications.info(game.i18n.localize("QJPC.notifications.fileDownload"));
+
+      }
+
+      if (settings.isToPrinter) {
+
+        const popup = new PrintPopup(text, settings);
+
+        popup.render({ force: true });
+        //TODO: Remove or bind notification to print button
+        //ui.notifications.info(game.i18n.localize("QJPC.notifications.print"));
+
+      }
+    }
   } catch (error) {
+    //TODO: localize error? Is that possible?
     console.error('Output channel could not be opened:', error);
   }
-
-  //if (text !== "") { ui.notifications.info(game.i18n.localize("QJPC.notifications.copied")); }
 };
 
 function replaceImgSrcPaths(doc, searchForPart, replaceWidthPath) {
@@ -587,175 +545,101 @@ function replaceImgSrcPaths(doc, searchForPart, replaceWidthPath) {
   return doc;
 }
 
-/*
-if (settings.isClipboard) {
-  await navigator.clipboard.writeText(text);
-}
 
-if (settings.isToFile) {
-  // Check if the browser supports the native File System Save Dialog
-  if ('showSaveFilePicker' in window) {
-    try {
-      const options = {
-        suggestedName: 'document.txt',
-        types: [{
-          description: 'Text Files',
-          accept: { 'text/plain': ['.txt'] },
-        }],
-      };
-
-      // This line opens the official browser "Save As" file dialog box
-      const handle = await window.showSaveFilePicker(options);
-
-      // User clicked "OK/Save" -> Write the text content to the selected file
-      const writable = await handle.createWritable();
-      await writable.write(text);
-      await writable.close();
-    } catch (err) {
-      // Handles cases where the user clicks "Cancel" on the dialog box
-      if (err.name !== 'AbortError') {
-        console.error('File save error:', err);
-      }
-    }
-  } else {
-    // FALLBACK: For browsers without showSaveFilePicker support (Safari / Firefox)
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'document.txt';
-    link.click();
-    URL.revokeObjectURL(link.href);
-  }
-}*/
-
-/*
-function exportChannel() {
-  if (settings.isToPrinter) {
-    // 1. Open a blank temporary print window
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
-
-    if (printWindow) {
-      // 2. Inject only the specific text into the new window's document
-      printWindow.document.write(`
-      <html>
-        <head>
-          <title>Print Document</title>
-          <style>
-            body { font-family: sans-serif; padding: 20px; white-space: pre-wrap; }
-          </style>
-        </head>
-        <body>${text}</body>
-      </html>
-    `);
-
-      printWindow.document.close(); // Finish loading the content
-      printWindow.focus();          // Focus the new window for the user
-
-      // 3. Trigger the print dialog on the sub-window, then close it
-      printWindow.print();
-      printWindow.close();
-    } else {
-      alert('Please allow popups to utilize the printing function.');
-    }
-  }
-}*/
-
-async function saveTextToFile(text,settings, fileName) {
+async function saveTextToFile(text, settings, fileName) {
   // create the data blob from the text
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
 
-//create the suffix
-//TODO: deconstruct suffix and replace with correct suffix for more automation
-let sufix=".txt"
-  if(settings.isHTML){
-sufix=".html"
+  //create the suffix
+  //TODO: deconstruct suffix and replace with correct suffix for more automation
+  let sufix = ".txt"
+  if (settings.isHTML) {
+    sufix = ".html"
   }
-  if(settings.isMarkdown){
-sufix=".md"
+  if (settings.isMarkdown) {
+    sufix = ".md"
   }
-fileName = settings.fileName || "clipboard"+sufix;
-/*
-  if ("showSaveFilePicker" in window) {
-    const handle = await window.showSaveFilePicker({
-      suggestedName: fileName ?? "clipboard"+sufix,
-      types: [
-        {
-          description: "Text files",
-          accept: { "text/plain": [".txt",".md",".html"] },
-        },
-      ],
-    });
+  fileName = settings.fileName || "clipboard" + sufix;
 
-    const writable = await handle.createWritable();
-    await writable.write(blob);
-    await writable.close();
-    return;
-  }*/
 
-    // Create an element to trigger the download
+  // Create an element to trigger the download
   const url = window.URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
   a.download = fileName;
 
-//  a.click();
-//  a.remove();
-//URL.revokeObjectURL(url);
-  
-// Dispatch a click event to the element
-// this should be more robust for older browsers/networks than above
-    a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
-    return new Promise(resolve => setTimeout(() => { window.URL.revokeObjectURL(a.href); resolve()}, 100));
+  //  a.click();
+  //  a.remove();
+  //URL.revokeObjectURL(url);
+
+  // Dispatch a click event to the element
+  // this should be more robust for older browsers/networks than above
+  a.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+  return new Promise(resolve => setTimeout(() => { window.URL.revokeObjectURL(a.href); resolve() }, 100));
 
 }
 
-function openPrintWindow(content, isHTML = false) {
-  const printWindow = window.open('', '_top', 'popup=true,width=500,height=700');
-  console.log("QJPS: PrintWindow ", printWindow)
-  if (!printWindow) return;
 
-  const bodyContent = isHTML ? content : escapeHtml(content).replace(/\n/g, '<br>');
+function domToPlainText(doc, isTrim = false) {
+  // Falls ein Document-Knoten (mit .body) übergeben wurde, nutzen wir den Body,
+  // ansonsten den Knoten selbst
+  const node = doc.body ? doc.body.cloneNode(true) : doc.cloneNode(true);
 
-  printWindow.document.open();
-  printWindow.document.write(`<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Print</title>
-  <style>
-    @page { margin: 20mm; }
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 12pt;
-      color: #000;
-      margin: 0;
-      padding: 20px;
+  // Declare tags which are handled like block tags with a LF
+  const blockTags = new Set([
+    "p", "div", "li", "ul", "ol", "section", "article", "details", "summary",
+    "header", "footer", "h1", "h2", "h3", "h4", "h5", "h6"
+  ]);
+
+  let exportText = "";
+
+  for (const child of node.childNodes) {
+
+    // 1. Text-Knoten verarbeiten
+    if (child.nodeType === Node.TEXT_NODE) {
+      // Wichtig: Text-Knoten sollten nicht pauschal ein "\n" erhalten,
+      // da sonst Inline-Text (wie <span>) fälschlicherweise umgebrochen wird.
+      exportText += child.textContent;
+      continue;
     }
-  </style>
-</head>
-<body>
-  ${bodyContent}
-  <script>
-    window.onload = () => {
-      window.focus();
-      setTimeout("window.print()", 100);
-    };
-    //window.onafterprint = () => window.close();
-    window.onafterprint = () => window.focus();
-  </script>
-</body>
-</html>`);
-  printWindow.document.close();
-  printWindow.focus();
-}
 
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
+    // 2. Andere Nicht-Element-Knoten (z.B. Kommentare) überspringen
+    if (child.nodeType !== Node.ELEMENT_NODE) {
+      continue;
+    }
 
+    const tag = child.tagName.toLowerCase();
+
+    // 3. <br> Tag direkt behandeln
+    if (tag === "br") {
+      exportText += "\n";
+      continue;
+    }
+
+    const isBlock = blockTags.has(tag);
+
+    // VOR dem Block-Element: Umbruch einfügen, wenn wir mitten in einer Zeile stehen
+    if (isBlock && exportText && !exportText.endsWith("\n")) {
+      exportText += "\n";
+    }
+
+    // Rekursiver Aufruf für die Kindsknoten
+    const childText = domToPlainText(child, false);
+    exportText += childText;
+
+    // NACH dem Block-Element: Wenn es ein Block-Tag war, MUSS hiernach ein Umbruch folgen.
+    // Das löst das Problem mit leeren <p></p> Tags.
+    if (isBlock) {
+      if (!exportText.endsWith("\n")) {
+        exportText += "\n";
+      } else if (childText === "" && exportText.endsWith("\n")) {
+        // Falls das Element komplett leer war UND davor schon ein Umbruch stand,
+        // erzwingen wir hier den "Absatz-Effekt" (Doppel-Umbruch)
+        exportText += "\n";
+      }
+    }
+  }
+
+  return exportText;
+}

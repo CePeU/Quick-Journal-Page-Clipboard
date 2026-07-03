@@ -1,12 +1,8 @@
+
 export const MODULE_ID = "quick-journal-page-clipboard";
+export const MODULE_SHORT_ID = "QJPC";
 
-const MODULE_SHORT_ID = "QJPC";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-
-function isBooleanSetting(setting) {
-  const BooleanField = foundry?.fields?.BooleanField ?? foundry?.data?.fields?.BooleanField;
-  return setting?.type === Boolean || (BooleanField && setting.type instanceof BooleanField);
-}
 
 export function createSettings() {
 
@@ -25,7 +21,7 @@ export function createSettings() {
     restricted: false
   });
 
-    game.settings.register(MODULE_ID, "fileName", {
+  game.settings.register(MODULE_ID, "fileName", {
     name: game.i18n.localize("QJPC.settings.fileName.name"),
     hint: game.i18n.localize("QJPC.settings.fileName.hint"),
     scope: "user",
@@ -223,6 +219,7 @@ export function createSettings() {
 
 
 // Create a Mixin Base class with generalized methods for all derived classes/modals
+// This is overengineered but a good test example
 class SettingsApplicationV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   //https://foundryvtt.wiki/en/development/api/applicationv2
   static DEFAULT_OPTIONS = {
@@ -250,7 +247,7 @@ class SettingsApplicationV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext() {
     return this.constructor.SETTINGS.reduce((obj, key) => {
       obj[key] = game.settings.get(MODULE_ID, key);
-      console.log("QJPC: Object for context access in modal: ", obj)
+      //console.log("QJPC: Object for context access in modal: ", obj)
       return obj;
     },
       {}
@@ -269,14 +266,6 @@ class SettingsApplicationV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static async #onSubmit(event, form, formData) {
-    console.log("QJPC: onSubmit event", event)
-    console.log("QJPC: onSubmit form", form)
-    console.log("QJPC: onSubmit formDATA", formData)
-    console.log("QJPC: onSubmit this IS? ", this)
-
-    const data = formData.object;
-    //const app = SettingsApplicationV2.getApplicationFromContext(this, form);
-    //if (!app) return;
 
     await this.saveSettings(formData);
     await this.close();
@@ -289,13 +278,14 @@ class SettingsApplicationV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     await app?.close();
   }
 
+  //Can be removed but also needs to be removed
   static #setSettings(_event, _target) {
     console.log("QJPC: Binding to setSettings SUCCESS - event: ", _event)
     console.log("QJPC: Binding to setSettings SUCESS - target: ", _target)
   }
 
   async saveSettings(formData) {
-    console.log("QJPC: FormData: ", formData)
+    //console.log("QJPC: FormData: ", formData)
     const data = formData.object ?? Object.fromEntries(formData.entries());
 
     /*
@@ -343,7 +333,7 @@ export class HtmlOptions extends SettingsApplicationV2 {
     id: `${MODULE_SHORT_ID}-html-options`,
     title: "HTML Options",
     window: { icon: "fas fa-cog", resizable: true },
-    position: { width: 740, height: "auto" } //width: Math.min(window.innerWidth * 0.6, 1000)
+    position: { width: Math.min(window.innerWidth * 0.6, 1000), height: "auto" }
   };
 
   static PARTS = {
@@ -369,7 +359,7 @@ export function getSettings() {
   const isPageTitle = game.settings.get(MODULE_ID, "isPageTitle");
   const radioButtonFormat = game.settings.get(MODULE_ID, "outputFormat");
   const radioButtonChannel = game.settings.get(MODULE_ID, "outputChannel");
-  const fileName = game.settings.get(MODULE_ID,"fileName");
+  const fileName = game.settings.get(MODULE_ID, "fileName");
   const isRenderNoteCallout = game.settings.get(MODULE_ID, "isDetailsTagObsidianCallout");
   const isRenderSecretCallout = game.settings.get(MODULE_ID, "isSecretObsidianCallout");
   const isRenderInfoCallout = game.settings.get(MODULE_ID, "isBlockQuoteObsidianCallout");
@@ -382,9 +372,9 @@ export function getSettings() {
 
   const isMarkdown = radioButtonFormat === "markdown";
   const isHTML = radioButtonFormat === "html";
-  const isCSS = styleCSS.length > 0 ? true : false;
-  const isHeader = htmlHeader > 0 ? true : false;
-  const isFooter = htmlFooter > 0 ? true : false;
+  const isCSS = styleCSS.trim().length > 0 ? true : false;
+  const isHeader = htmlHeader.trim().length > 0 ? true : false;
+  const isFooter = htmlFooter.trim().length > 0 ? true : false;
 
   const isToPrinter = radioButtonChannel === "toPrinter";
   const isToFile = radioButtonChannel === "toFile";

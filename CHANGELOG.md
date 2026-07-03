@@ -1,3 +1,30 @@
+## [1.2.0] / 2026-06-29
+### Added
+- Output channels so now text can be saved as file export and printed in addition to clipboard export
+- Keybinds to choose a channel
+- HTML export now got a header, footer and style section
+- file export got a file name setting
+### Fixed
+### Changed 
+- 3 point menue now shows which channel and which kind of export
+### Technical
+- overworked Readme to by adding new feature description 
+### Removed
+### Deprecated
+### Security
+
+
+## [1.1.0] / 2026-06-23
+### Added
+- preliminary option to add your own css to html
+### Fixed
+### Changed
+- Moved HTML and Markdown Settiings into their own APP v2 Window 
+### Technical
+### Removed
+### Deprecated
+### Security
+
 ## [1.0.7] / 2026-06-07
 ### Added
 ### Fixed

@@ -1,14 +1,14 @@
 <div class="html-settings">
 
-<div class="form-group">
+  <div class="form-group">
     <label for="htmlHeader">
       {{localize "QJPC.settings.htmlHeader.name"}}
     </label>
-    <textarea id="htmlHeader" name="htmlHeader" rows="3">{{htmlStyleTag}}</textarea>
+    <textarea id="htmlHeader" name="htmlHeader" rows="3">{{htmlHeader}}</textarea>
     <p class="notes">{{localize "QJPC.settings.htmlHeader.hint"}}</p>
   </div>
 
-<div class="form-group">
+  <div class="form-group">
     <label for="htmlStyleTag">
       {{localize "QJPC.settings.htmlStyleTag.name"}}
     </label>
@@ -17,11 +17,12 @@
   </div>
 
 
-<div class="form-group">
+  <div class="form-group">
     <label for="base64PictureExport">
       {{localize "QJPC.settings.base64PictureExport.name"}}
     </label>
-    <input type="checkbox" id="base64PictureExport" name="base64PictureExport" {{#if base64PictureExport}}checked{{/if}}>
+    <input type="checkbox" id="base64PictureExport" name="base64PictureExport" {{#if
+      base64PictureExport}}checked{{/if}}>
     <p class="notes">{{localize "QJPC.settings.base64PictureExport.hint"}}</p>
   </div>
 
@@ -45,12 +46,14 @@
     <label for="htmlFooter">
       {{localize "QJPC.settings.htmlFooter.name"}}
     </label>
-    <textarea id="htmlFooter" name="htmlFooter" rows="3">{{htmlStyleTag}}</textarea>
+    <textarea id="htmlFooter" name="htmlFooter" rows="3">{{htmlFooter}}</textarea>
     <p class="notes">{{localize "QJPC.settings.htmlFooter.hint"}}</p>
   </div>
 
   <div class="form-buttons">
-    <button type="submit" class="button save" data-action="setSettings">{{localize "QJPC.settings.buttons.save"}}</button>
-    <button type="button" class="button cancel" data-action="cancel">{{localize "QJPC.settings.buttons.cancel"}}</button>
+    <button type="submit" class="button save" data-action="setSettings">{{localize
+      "QJPC.settings.buttons.save"}}</button>
+    <button type="button" class="button cancel" data-action="cancel">{{localize
+      "QJPC.settings.buttons.cancel"}}</button>
   </div>
 </div>
