@@ -1,59 +1,127 @@
 {
-  "QJPC.settings.removeGMSecrets.name": "Versteckt Geheimnisse für Spieler",
-  "QJPC.settings.removeGMSecrets.hint": "Dies entfernt die versteckten Geheimnisse für alle SPIELER vor dem Export.",
-  "QJPC.settings.returnHTMLtext.name": "HTML Text",
-  "QJPC.settings.returnHTMLtext.hint": "Liefert das HTML das von Foundry gespeichert und im editor bearbeitet werden kann statt nur Text.",
-  "QJPC.settings.isCuratedText.name": "Angepasster Text",
-  "QJPC.settings.isCuratedText.hint": "Liefert angepassten Text. Das heißt dass Leerzeichen die zum Styling benutzt wurden auch entfernt wurden.",
-  "QJPC.settings.isEmptyLineText.name": "Entferne Leerzeilen",
-  "QJPC.settings.isEmptyLineText.hint": "Entfernt Leerzeilen aus dem Text. Falls Leerzeilen gewünscht sind um den Text zu strukturieren, sollte diese Option hier nicht genutzt werden.",
-  "QJPC.settings.isPageTitle.name": "Seitentitel einfügen",
-  "QJPC.settings.isPageTitle.hint": "Dies fügt den Seitentitel an den Anfang des exportierten Textes hinzu.",
-  "QJPC.settings.returnMDtext.name": "Zu Markdown rendern",
-  "QJPC.settings.returnMDtext.hint": "Rendert den Text einer Journal seit zu Markdown bevor es zum Clipboard export kommt.",
-  "QJPC.controls.clipboard.label": "Zwischenablage",
-  "QJPC.notifications.copied": "Text in die Zwischenablage kopiert.",
-  "QJPC.notifications.unsupported": "Nicht unterstützer Seitentyp!",
-  "QJPC.notifications.noJournalOpen": "Keine geöffnetes oder aktives Journal Fenster.",
-  "QJPC.warning.error": "Fehler beim kopieren in die Zwischenablage.",
-  "QJPC.warning.onlyOneAllowed": "Nur Markdown or HTML darf gleichzeitig Aktiv sein. Zu nur Text Export gewechselt.",
-  "QJPC.settings.plaintext.name": "Nur Text",
-  "QJPC.settings.outputFormat.name": "Ausgabe Format",
-  "QJPC.settings.outputFormat.hint": "Das Ausgabe Formt das in die Zwischenablage gelegt werden soll. Markdown wird durch ein eigenen Renderer gerendert.",
-  "QJPC.settings.allowLimited.name": "'Beschränkt Berechtigter' Export",
-  "QJPC.settings.allowLimited.hint": "Erlaubt den Export von 'Beschränkt' berechtigten Seiten. Vorsicht! Dies kann sehr systemspezifisch sein.",
-  "QJPC.settings.isSecretObsidianCallout.name": "Geheimnis als Callout",
-  "QJPC.settings.isSecretObsidianCallout.hint": "Gibt Secrets als Obsidian Stil Callouts mit dem Callout Bezeichner '[!secret]' aus.",
-  "QJPC.settings.isDetailsTagObsidianCallout.name": "'Details' Tag als Callout",
-  "QJPC.settings.isDetailsTagObsidianCallout.hint": "Gibt HTML Details tags als Obsidian MD Callouts mit dem Callout Bezeichner '[!note]' aus.",
-  "QJPC.settings.isBlockQuoteObsidianCallout.name": "Blockquotes als Callout",
-  "QJPC.settings.isBlockQuoteObsidianCallout.hint": "Gibt Blockquotes als Obsidian MD Callouts mit dem Callout Bezeichner '[!info]' aus.",
-  "QJPC.settings.secretsForGM.name": "Versteckt Geheimnisse für Spielleiter",
-  "QJPC.settings.secretsForGM.hint": "Schaltet den Export von versteckten Geheimnissen für den Spielleiter ein und aus.",
-  "QJPC.settings.htmlStyleTag.name": "Style CSS/Header",
-  "QJPC.settings.htmlStyleTag.hint": "Füge das CSS ohne style tags ein dass dem html export vorangestellt werden soll.",
-  "QJPC.settings.picturePathSearchFor.name": "Bildpfad zu ersetzen",
-  "QJPC.settings.picturePathSearchFor.hint": "Hier kann der Textstring hinterlegt werden nach dem gesucht werden soll um den Pfad zum Bild anzupassen. Zum Beispiel der Foundry Pfad 'assets'. Leer lassen falls keine Ersetzungen durchgeführt werden sollen.",
-  "QJPC.settings.picturePathReplaceWith.name": "Bildpfad ersetzt durch ",
-  "QJPC.settings.picturePathReplaceWith.hint": "Dies ist der Pfad durch den der Bildpfad ersetzt werden soll. Zum Beispiel 'D:\\Foundry14.363\\Data\\assets'. Leer lassen falls keine Ersetzungen durchgeführt werden sollen.",
-  "QJPC.settings.buttons.save": "Speichern",
-  "QJPC.settings.buttons.cancel": "Abbrechen",
-  "QJPC.settings.htmlFooter.name": "HTML Fußzeile",
-  "QJPC.settings.htmlFooter.hint": "HTML Fußzeile Inhalt wird am Ende des exportierten HTML eingefügt. Der Inhalt muss alle tags enthalten die notwendig sein sollten.",
-  "QJPC.settings.htmlHeader.name": "HTML Kopfzeile",
-  "QJPC.settings.htmlHeader.hint": "HTML Kopfzeile Inhalt wird am Anfang des exportierten HTML eingefügt. Der Inhalt muss alle tags enthalten die notwendig sein sollten.",
-  "QJPC.settings.base64PictureExport.name": "Exportiere Bilder im HTML",
-  "QJPC.settings.base64PictureExport.hint": "Exportiere Bilder als base64 encodierten Datenblock im html. Solange diese Option gesetzt ist werden keine Pfade ersetzt, sondern die Bild URL komplett ersetzt.",
-  "QJPC.settings.outputChannel.name": "Export Ziel",
-  "QJPC.settings.outputChannel.hint": "Wohin soll der Export stattfinden. Standard ist die Zwischenablage.",
-  "QJPC.settings.channelClibboard.name": "Zwischenablage",
-  "QJPC.settings.channelFile.name": "Datei export",
-  "QJPC.settings.channelPrint.name": "Ausdrucken",
-  "QJPC.windows.printPreview": "Druck Vorschau",
-  "QJPC.controls.print.label": "Ausdrucken",
-  "QJPC.controls.saveAs.label": "Speichern",
-  "QJPC.settings.fileName.name":"Dateinamen",
-  "QJPC.settings.fileName.hint":"Bitte nur den Dateinamen OHNE Dateipfad für den Dateiexport eingeben.",
-  "QJPC.notifications.fileDownload": "Journal text wurde gespeichert.",
-  "QJPC.notifications.print":"Journal wurde an den Drucker geschickt."
+  "QJPC": {
+    "settings": {
+      "removeGMSecrets": {
+        "name": "Versteckt Geheimnisse für Spieler",
+        "hint": "Dies entfernt die versteckten Geheimnisse für alle SPIELER vor dem Export."
+      },
+      "returnHTMLtext": {
+        "name": "HTML Text",
+        "hint": "Liefert das HTML das von Foundry gespeichert und im editor bearbeitet werden kann statt nur Text."
+      },
+      "isCuratedText": {
+        "name": "Angepasster ausgabe Text",
+        "hint": "Liefert angepassten ausgabe Text. Das heißt der export text wird so angepasst das Block elemente einen Zeilenumbruch erzeugen und der Ansicht im Journal entsprechen."
+      },
+      "isEmptyLineText": {
+        "name": "Entferne Leerzeilen",
+        "hint": "Entfernt Leerzeilen aus dem Text. Falls Leerzeilen gewünscht sind um den Text zu strukturieren, sollte diese Option hier nicht genutzt werden."
+      },
+      "isPageTitle": {
+        "name": "Seitentitel einfügen",
+        "hint": "Dies fügt den Seitentitel an den Anfang des exportierten Textes hinzu."
+      },
+      "returnMDtext": {
+        "name": "Zu Markdown rendern",
+        "hint": "Rendert den Text einer Journal seit zu Markdown bevor es zum Clipboard export kommt."
+      },
+      "plaintext": {
+        "name": "Nur Text"
+      },
+      "outputFormat": {
+        "name": "Ausgabe Format",
+        "hint": "Das Ausgabe Formt das in die Zwischenablage gelegt werden soll. Markdown wird durch ein eigenen Renderer gerendert."
+      },
+      "allowLimited": {
+        "name": "'Beschränkt Berechtigter' Export",
+        "hint": "Erlaubt den Export von 'Beschränkt' berechtigten Seiten. Vorsicht! Dies kann sehr systemspezifisch sein."
+      },
+      "isSecretObsidianCallout": {
+        "name": "Geheimnis als Callout",
+        "hint": "Gibt Secrets als Obsidian Stil Callouts mit dem Callout Bezeichner '[!secret]' aus."
+      },
+      "isDetailsTagObsidianCallout": {
+        "name": "'Details' Tag als Callout",
+        "hint": "Gibt HTML Details tags als Obsidian MD Callouts mit dem Callout Bezeichner '[!note]' aus."
+      },
+      "isBlockQuoteObsidianCallout": {
+        "name": "Blockquotes als Callout",
+        "hint": "Gibt Blockquotes als Obsidian MD Callouts mit dem Callout Bezeichner '[!info]' aus."
+      },
+      "secretsForGM": {
+        "name": "Versteckt Geheimnisse für Spielleiter",
+        "hint": "Schaltet den Export von versteckten Geheimnissen für den Spielleiter ein und aus."
+      },
+      "htmlStyleTag": {
+        "name": "Style CSS/Header",
+        "hint": "Füge das CSS ohne style tags ein dass dem html export vorangestellt werden soll."
+      },
+      "picturePathSearchFor": {
+        "name": "Bildpfad zu ersetzen",
+        "hint": "Hier kann der Textstring hinterlegt werden nach dem gesucht werden soll um den Pfad zum Bild anzupassen. Zum Beispiel der Foundry Pfad 'assets'. Leer lassen falls keine Ersetzungen durchgeführt werden sollen."
+      },
+      "picturePathReplaceWith": {
+        "name": "Bildpfad ersetzt durch ",
+        "hint": "Dies ist der Pfad durch den der Bildpfad ersetzt werden soll. Zum Beispiel 'D:\\Foundry14.363\\Data\\assets'. Leer lassen falls keine Ersetzungen durchgeführt werden sollen."
+      },
+      "buttons": {
+        "save": "Speichern",
+        "cancel": "Abbrechen"
+      },
+      "htmlFooter": {
+        "name": "HTML Fußzeile",
+        "hint": "HTML Fußzeile Inhalt wird am Ende des exportierten HTML eingefügt. Der Inhalt muss alle tags enthalten die notwendig sein sollten."
+      },
+      "htmlHeader": {
+        "name": "HTML Kopfzeile",
+        "hint": "HTML Kopfzeile Inhalt wird am Anfang des exportierten HTML eingefügt. Der Inhalt muss alle tags enthalten die notwendig sein sollten."
+      },
+      "base64PictureExport": {
+        "name": "Exportiere Bilder im HTML",
+        "hint": "Exportiere Bilder als base64 encodierten Datenblock im html. Solange diese Option gesetzt ist werden keine Pfade ersetzt, sondern die Bild URL komplett ersetzt."
+      },
+      "outputChannel": {
+        "name": "Export Ziel",
+        "hint": "Wohin soll der Export stattfinden. Standard ist die Zwischenablage."
+      },
+      "channelClipboard": {
+        "name": "Zwischenablage"
+      },
+      "channelFile": {
+        "name": "Datei export"
+      },
+      "channelPrint": {
+        "name": "Ausdrucken"
+      },
+      "fileName": {
+        "name": "Dateinamen",
+        "hint": "Bitte nur den Dateinamen OHNE Dateipfad für den Dateiexport eingeben."
+      }
+    },
+    "controls": {
+      "clipboard": {
+        "label": "Zwischenablage"
+      },
+      "print": {
+        "label": "Ausdrucken"
+      },
+      "saveAs": {
+        "label": "Speichern"
+      }
+    },
+    "notifications": {
+      "copied": "Text in die Zwischenablage kopiert.",
+      "unsupported": "Nicht unterstützer Seitentyp!",
+      "noJournalOpen": "Keine geöffnetes oder aktives Journal Fenster.",
+      "fileDownload": "Journal text wurde gespeichert.",
+      "print": "Journal wurde an den Drucker geschickt."
+    },
+    "warning": {
+      "error": "Fehler beim kopieren in die Zwischenablage.",
+      "onlyOneAllowed": "Nur Markdown or HTML darf gleichzeitig Aktiv sein. Zum nur Text Export gewechselt."
+    },
+    "windows": {
+      "printPreview": "Druck Vorschau"
+    }
+  }
 }

@@ -155,6 +155,7 @@ Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
 
   let settings = getSettings();
 
+
   let sufix = " (Text)"
   if (settings.isHTML) {
     sufix = " (HTML)"
@@ -313,26 +314,10 @@ async function extractPlainTextFromPage(page) {
     doc.querySelectorAll("section.secret:not(.revealed)").forEach(el => el.remove());
   }
 
-  //remove all DOM elements which have an empty innerHTML unless they are on the keep list
-
-  /*
-  if (settings.isEmptyLine) {
-    const keepTags = new Set([
-      "br", "hr", "img", "input", "meta", "link", "source", "track", "wbr",
-      "base", "area", "col", "embed", "param"
-    ]);
-
-    doc.querySelectorAll("*").forEach(el => {
-      if (!keepTags.has(el.tagName.toLowerCase()) && el.innerHTML.trim() === "") {
-        el.remove();
-      }
-    });
-  }*/
-
   // extract text from html
 
   let resultingText = "";
-  console.log("QJPC: Settings: ", settings)
+
   switch (true) {
     case settings.isHTML:
       if (settings.isPictureEncode) {
@@ -345,6 +330,22 @@ async function extractPlainTextFromPage(page) {
         }
       }
 
+      //For file export of html AND empty line settings the DOM can be cleaned in advance
+      if (settings.isEmptyLine && settings.isToFile) {
+        //remove all DOM elements which have an empty innerHTML unless they are on the keep list
+        const keepTags = new Set([
+          "hr", "img", "input", "meta", "link", "source", "track", "wbr",
+          "base", "area", "col", "embed", "param", "table", "tr", "td", "th",
+        ]);
+
+        doc.querySelectorAll("*").forEach(el => {
+          if (!keepTags.has(el.tagName.toLowerCase()) && el.innerHTML.trim() === "") {
+            el.remove();
+          }
+        });
+
+      }
+
       resultingText = doc.body.innerHTML || "";
       break;
 
@@ -353,44 +354,29 @@ async function extractPlainTextFromPage(page) {
       break;
 
     case settings.isCuratedText:
-      //innerText is what the user can actually see on the page (so hidden is not entailed)
-      //innerText is affected by css and linebreaks
-      resultingText = domToPlainText(doc, true)
-      //console.log("QJPC: Dom to Plain Text: ", resultingText)
-      //resultingText = resultingText.trim()
-      console.log("QJPC: Dom to Plain Text curated: ", resultingText)
-
-      //remove any lines which are empty after trim or are left over
+      resultingText = domToPlainText(doc)
+      //remove any lines which are empty
       if (settings.isEmptyLine) {
-        //resultingText = domToPlainText(doc, false)
         resultingText = resultingText.replace(/^\s*\n/gm, ""); // remove lines that are empty or only whitespace
-        console.log("QJPC: Dom to Plain Text curated DELETED: ", resultingText)
       }
       break;
 
     default:
+      //innerText is what the user can actually see on the page (so hidden is not entailed)
+      //innerText is affected by css and linebreaks <-- this would be the ideal export format
+      //IF the HTML was not saved without line feeds by Foundry
+      //so as a default we use textContent
       //everything that is as text in the DOM
       // no css and line breaks
-      resultingText = domToPlainText(doc, false)
-      console.log("QJPC: Non curated: ", resultingText)
+
+      resultingText = doc.body.textContent ?? ""
+
       if (settings.isEmptyLine) {
-        //resultingText = domToPlainText(doc, false)
         resultingText = resultingText.replace(/^\s*\n/gm, ""); // remove lines that are empty or only whitespace
-        console.log("QJPC: Non curated DELETED: ", resultingText)
       }
       break;
   }
-  return resultingText;
-}
-
-function normalizeText(text) {
-  console.log("QJPC: Normalize Text: ", text)
-  console.log("QJPC: Normalize Text and Manuall TRIM: ", text.trim())
-  return text
-    .replace(/\r\n/g, "\n")           // normalize line endings
-    //.replace(/^\s*\n/gm, "")          // remove lines that are empty or only whitespace
-    .replace(/\n{3,}/g, "\n\n")       // collapse 3+ newlines to 2
-    .trim();
+  return resultingText ?? "";
 }
 
 function getAbsoluteTopJournal() {
@@ -474,10 +460,6 @@ async function getClipboardText(sheet) {
       text = exportText
     }
 
-    if (settings.isEmptyLine) {
-      //TODO: Remove empty p and div tags
-    }
-
 
 
   }
@@ -507,7 +489,7 @@ async function getClipboardText(sheet) {
       }
     }
   } catch (error) {
-    //TODO: localize error? Is that possible?
+    //TODO: localize error message? Is that possible?
     console.error('Output channel could not be opened:', error);
   }
 };
@@ -569,6 +551,7 @@ async function saveTextToFile(text, settings, fileName) {
   a.href = url;
   a.download = fileName;
 
+  //===  alternative code as a reminder
   //  a.click();
   //  a.remove();
   //URL.revokeObjectURL(url);
@@ -581,9 +564,9 @@ async function saveTextToFile(text, settings, fileName) {
 }
 
 
-function domToPlainText(doc, isTrim = false) {
-  // Falls ein Document-Knoten (mit .body) übergeben wurde, nutzen wir den Body,
-  // ansonsten den Knoten selbst
+function domToPlainText(doc) {
+  // If a dochument node with .body has been passed then we use the body node
+  // else the original node is used
   const node = doc.body ? doc.body.cloneNode(true) : doc.cloneNode(true);
 
   // Declare tags which are handled like block tags with a LF
@@ -598,20 +581,21 @@ function domToPlainText(doc, isTrim = false) {
 
     // 1. Text-Knoten verarbeiten
     if (child.nodeType === Node.TEXT_NODE) {
-      // Wichtig: Text-Knoten sollten nicht pauschal ein "\n" erhalten,
-      // da sonst Inline-Text (wie <span>) fälschlicherweise umgebrochen wird.
+      // Important: Text-Nodes should not get a  linefeed "\n" in general,
+      // because otherwise inline text (like <span>) would get a line feed
+      // <p> test1 <span>test2</span> test3 <p> this are for example THREE nodes
       exportText += child.textContent;
       continue;
     }
 
-    // 2. Andere Nicht-Element-Knoten (z.B. Kommentare) überspringen
+    // 2. Other NON element token for example comments (there are 12 type of nodes). Element nodes are basic hmtl tags
     if (child.nodeType !== Node.ELEMENT_NODE) {
       continue;
     }
 
     const tag = child.tagName.toLowerCase();
 
-    // 3. <br> Tag direkt behandeln
+    // 3. <br> tag are handled directly
     if (tag === "br") {
       exportText += "\n";
       continue;
@@ -619,23 +603,23 @@ function domToPlainText(doc, isTrim = false) {
 
     const isBlock = blockTags.has(tag);
 
-    // VOR dem Block-Element: Umbruch einfügen, wenn wir mitten in einer Zeile stehen
+    // insert a linefedd before block elements! For example if we are in the mids of a line
     if (isBlock && exportText && !exportText.endsWith("\n")) {
       exportText += "\n";
     }
 
-    // Rekursiver Aufruf für die Kindsknoten
-    const childText = domToPlainText(child, false);
+    // recursive call of child nodes aka nested nodes
+    const childText = domToPlainText(child);
     exportText += childText;
 
-    // NACH dem Block-Element: Wenn es ein Block-Tag war, MUSS hiernach ein Umbruch folgen.
-    // Das löst das Problem mit leeren <p></p> Tags.
+    // After a block element: If it was a block tag then a linefeed MUST follow.
+    // this solves that empty <p></p> have no text but shall trigger a line break as it does in the journal.
     if (isBlock) {
       if (!exportText.endsWith("\n")) {
         exportText += "\n";
       } else if (childText === "" && exportText.endsWith("\n")) {
-        // Falls das Element komplett leer war UND davor schon ein Umbruch stand,
-        // erzwingen wir hier den "Absatz-Effekt" (Doppel-Umbruch)
+        // If an element was completly empty AND there was a linefed before that one allready,
+        // we trigger a doubpe linefeed
         exportText += "\n";
       }
     }

@@ -13,11 +13,11 @@ export function createSettings() {
     config: true,
     type: String,
     choices: {
-      clipboard: game.i18n.localize("QJPC.settings.channelClibboard.name"),
+      clipboard: game.i18n.localize("QJPC.settings.channelClipboard.name"),
       toFile: game.i18n.localize("QJPC.settings.channelFile.name"),
       toPrinter: game.i18n.localize("QJPC.settings.channelPrint.name")
     },
-    default: game.i18n.localize("QJPC.settings.channelClibboard.name"),
+    default: game.i18n.localize("QJPC.settings.channelClipboard.name"),
     restricted: false
   });
 
@@ -278,10 +278,10 @@ class SettingsApplicationV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     await app?.close();
   }
 
-  //Can be removed but also needs to be removed
+  //TODO: Can be removed but also needs to be removed - keeping it as example for now
   static #setSettings(_event, _target) {
-    console.log("QJPC: Binding to setSettings SUCCESS - event: ", _event)
-    console.log("QJPC: Binding to setSettings SUCESS - target: ", _target)
+    //console.log("QJPC: Binding to setSettings SUCCESS - event: ", _event)
+    //console.log("QJPC: Binding to setSettings SUCESS - target: ", _target)
   }
 
   async saveSettings(formData) {
@@ -378,8 +378,11 @@ export function getSettings() {
 
   const isToPrinter = radioButtonChannel === "toPrinter";
   const isToFile = radioButtonChannel === "toFile";
-  const isClipboard = radioButtonChannel === "clipboard";
+  let isClipboard = radioButtonChannel === "clipboard";
 
+  //On first install if no settings have been saved then the dropdown has only false values as none was selected and saved
+  //TOD: check if a default can be initialized?
+  if (!isClipboard && !isToFile && !isToPrinter) { isClipboard = true }
 
   const settings =
   {
