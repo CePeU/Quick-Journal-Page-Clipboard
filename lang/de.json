@@ -54,7 +54,7 @@
       },
       "htmlStyleTag": {
         "name": "Style CSS/Header",
-        "hint": "Füge das CSS ohne style tags ein dass dem html export vorangestellt werden soll."
+        "hint": "Füge das CSS ohne style tags ein dass dem html export vorangestellt werden soll.Beispiel: .qjpc-print-document {background: red;}"
       },
       "picturePathSearchFor": {
         "name": "Bildpfad zu ersetzen",
@@ -118,7 +118,8 @@
     },
     "warning": {
       "error": "Fehler beim kopieren in die Zwischenablage.",
-      "onlyOneAllowed": "Nur Markdown or HTML darf gleichzeitig Aktiv sein. Zum nur Text Export gewechselt."
+      "onlyOneAllowed": "Nur Markdown or HTML darf gleichzeitig Aktiv sein. Zum nur Text Export gewechselt.",
+      "channel": "Ausgabe Kannal konnte nicht geöffnet werden."
     },
     "windows": {
       "printPreview": "Druck Vorschau"

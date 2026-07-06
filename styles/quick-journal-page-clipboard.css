@@ -15,19 +15,19 @@
 
 .qjpc-settings .form-buttons {
   display: flex;
-  /* Aktiviert Flexbox, wodurch Elemente standardmäßig nebeneinander stehen */
+  /* activates flexbox, which arranges the elements horizontally one after the other */
   gap: 10px;
   /* Erzeugt einen flexiblen Abstand zwischen den Buttons */
   justify-content: flex-end;
-  /* Richtet die Buttons linksbündig aus (Nutze 'flex-end' für rechtsbündig) */
+  /* arranges the buttons on the right side (use flex-start for left sided) */
 }
 
-/* Optional: Falls die Buttons die gleiche Breite haben sollen */
+/* Optional: makes the buttons same size */
 .qjpc-settings .form-buttons .button {
   flex: 1;
-  /* Lässt beide Buttons gleichmäßig wachsen, um den Platz auszufüllen */
+  /* let the buttons grow syymetrically to fill the available place */
   max-width: 150px;
-  /* Begrenzt die maximale Breite, damit sie nicht riesig werden */
+  /* constrains the size of the buttons to not fill the whole available place */
 }
 
 .qjpc-settings #htmlFooter {
@@ -76,18 +76,11 @@
 
 .qjpc-print-modal .print-button {
   display: flex;
-  /* Aktiviert Flexbox, wodurch Elemente standardmäßig nebeneinander stehen */
+  /* activates flexbox, which arranges the elements horizontally one after the other */
   gap: 10px;
   /* Erzeugt einen flexiblen Abstand zwischen den Buttons */
   justify-content: flex-end;
-  /* Richtet die Buttons linksbündig aus (Nutze 'flex-end' für rechtsbündig) */
+  /* arranges the buttons on the right side (use flex-start for left sided) */
   background: rgb(255, 255, 255);
 
-}
-
-@media print {
-  body {
-    background: blue !important;
-    color: rgb(255, 255, 255) !important;
-  }
 }

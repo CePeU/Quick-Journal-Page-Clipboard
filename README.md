@@ -14,7 +14,8 @@ Callout export ist supported for Blockquotes or details tag callouts and can be 
 
 You have a lot of cusomizing options in the way you want to export your content.
 
-You also can export with keybinds:
+You also can export with keybinds:   
+
 Export to clipboard:    CTRL+ALT+C
 Export to file:         CTRL+ALT+F
 Export to printer:      CTRL+ALT+P

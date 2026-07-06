@@ -54,7 +54,7 @@
       },
       "htmlStyleTag": {
         "name": "Style CSS",
-        "hint": "Copy and paste any CSS you want to use for the html export here (without style tags). It will be added at the start of the html."
+        "hint": "Copy and paste any CSS you want to use for the html export here (without style tags). It will be added at the start of the html. Example: .qjpc-print-document {background: red;}"
       },
       "picturePathSearchFor": {
         "name": "IMG path to replace",
@@ -118,7 +118,8 @@
     },
     "warning": {
       "error": "Error during clipboard copy event.",
-      "onlyOneAllowed": "Only Markdown or HTML can be active at the same time. Switched to plain text export."
+      "onlyOneAllowed": "Only Markdown or HTML can be active at the same time. Switched to plain text export.",
+      "channel": "Output channel could not be opened."
     },
     "windows": {
       "printPreview": "Print preview"

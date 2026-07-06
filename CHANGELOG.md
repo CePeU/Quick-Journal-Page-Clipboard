@@ -1,3 +1,16 @@
+## [1.2.1] / 2026-07-06
+### Added
+- feature creep see CHANGELOG 1.1.0 and 1.2.0 
+### Fixed
+- 3 point menue is now shown even if no save in settings has been made so far
+- sufix is now added correctly to filename if user chooses an export name
+### Changed
+- Keybinds do not change output channel. As they do not change out format user can either use keybind or do a change in settings. This seems more consistent.
+### Technical 
+### Removed
+### Deprecated
+### Security
+
 ## [1.2.0] / 2026-06-29
 ### Added
 - Output channels so now text can be saved as file export and printed in addition to clipboard export
@@ -12,7 +25,6 @@
 ### Removed
 ### Deprecated
 ### Security
-
 
 ## [1.1.0] / 2026-06-23
 ### Added

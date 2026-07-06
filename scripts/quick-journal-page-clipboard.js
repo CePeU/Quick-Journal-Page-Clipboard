@@ -53,8 +53,10 @@ export function createKeybinds(settings) {
       }
 
       try {
+        const currentSetting = game.settings.get(MODULE_ID, "outputChannel");
         await game.settings.set(MODULE_ID, "outputChannel", "clipboard")
         await getClipboardText(sheetObject);
+        await game.settings.set(MODULE_ID, "outputChannel", currentSetting)
       } catch (error) {
         console.error(game.i18n.localize("QJPC.warning.error"), error);
         ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
@@ -88,8 +90,10 @@ export function createKeybinds(settings) {
       }
 
       try {
+        const currentSetting = game.settings.get(MODULE_ID, "outputChannel");
         await game.settings.set(MODULE_ID, "outputChannel", "toPrinter")
         await getClipboardText(sheetObject);
+        await game.settings.set(MODULE_ID, "outputChannel", currentSetting)
       } catch (error) {
         console.error(game.i18n.localize("QJPC.warning.error"), error);
         ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
@@ -120,8 +124,10 @@ export function createKeybinds(settings) {
       }
 
       try {
+        const currentSetting = game.settings.get(MODULE_ID, "outputChannel");
         await game.settings.set(MODULE_ID, "outputChannel", "toFile")
         await getClipboardText(sheetObject);
+        await game.settings.set(MODULE_ID, "outputChannel", currentSetting)
       } catch (error) {
         console.error(game.i18n.localize("QJPC.warning.error"), error);
         ui.notifications.error(game.i18n.localize("QJPC.warning.error"));
@@ -214,6 +220,10 @@ async function exportJournalText(sheet) {
   const pages = sheet.document.pages.contents ?? []; //contents property/accessor will transform internally a collection into an array
 
   const exportPages = getPagesToExport(sheet, pages); //collects the pages to be exported
+
+  //TEST
+  const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+  console.log("QJPC: Collected style links Journal", links)
 
   if (exportPages.length === 0) {
     return "";
@@ -480,17 +490,19 @@ async function getClipboardText(sheet) {
 
       if (settings.isToPrinter) {
 
-        const popup = new PrintPopup(text, settings);
+        await openPrintPreview(text, settings)
 
-        popup.render({ force: true });
+        //const popup = new PrintPopup(text, settings);
+
+        //popup.render({ force: true });
         //TODO: Remove or bind notification to print button
         //ui.notifications.info(game.i18n.localize("QJPC.notifications.print"));
 
       }
     }
   } catch (error) {
-    //TODO: localize error message? Is that possible?
-    console.error('Output channel could not be opened:', error);
+    console.error(game.i18n.localize("QJPC.warning.channel"), error);
+    ui.notifications.error(game.i18n.localize("QJPC.warning.channel"));
   }
 };
 
@@ -541,7 +553,8 @@ async function saveTextToFile(text, settings, fileName) {
   if (settings.isMarkdown) {
     sufix = ".md"
   }
-  fileName = settings.fileName || "clipboard" + sufix;
+  fileName = settings.fileName || "clipboard";
+  fileName += sufix
 
 
   // Create an element to trigger the download
@@ -626,4 +639,30 @@ function domToPlainText(doc) {
   }
 
   return exportText;
+}
+
+//Allways open a completly new PrintPopup modal to make sure css is correctly set in the new object
+async function openPrintPreview(htmlContent, currentSettings) {
+  // 1. Check if an instance of this modal already exists in Foundry's registry
+  const existing = foundry.applications.instances.get("qjpc-print-preview");
+
+
+  if (existing) {
+    existing.updateContent(htmlContent, currentSettings);
+  } else {
+    new PrintPopup(htmlContent, currentSettings).render({ force: true });
+  }
+
+  /*
+  if (existing) {
+    // 2. Fully close and dismantle the old application instance
+    await existing.close();
+  }
+
+  // 3. Instantiate a completely fresh instance so the constructor gets fresh data
+  const freshPopup = new PrintPopup(htmlContent, currentSettings);
+
+  // 4. Render it with the force option
+  freshPopup.render({ force: true });
+  */
 }

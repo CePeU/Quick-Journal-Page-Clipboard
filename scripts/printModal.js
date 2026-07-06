@@ -1,4 +1,11 @@
-// PrintPopup.js
+/*
+The print modal creates and holds an iframe to separate the print object from the foundry UI
+That comes with a few caveats like transfering css of a system correctly (which does not yet work as intended)
+Also giving the user access to adjust css opens up the ability to mess things up.
+But .. no risk no fun.
+I need to play around with this more. Maybe it is not the best solution.
+*/
+
 const { ApplicationV2 } = foundry.applications.api;
 
 export default class PrintPopup extends ApplicationV2 {
@@ -29,6 +36,14 @@ export default class PrintPopup extends ApplicationV2 {
     // 2. Store custom data and settings straight onto the instance
     this.htmlContent = htmlContent ?? "";
     this.pluginSettings = settings ?? {};
+  }
+
+  updateContent(newHtml, newSettings) {
+    this.htmlContent = newHtml ?? "";
+    this.pluginSettings = newSettings ?? {};
+
+    // Force ApplicationV2 to recalculate _renderHTML and rebuild the iframe srcdoc
+    this.render({ force: true });
   }
 
   /**
@@ -68,7 +83,6 @@ export default class PrintPopup extends ApplicationV2 {
 
   _onRender(context, options) {
     super._onRender(context, options);
-    //console.log("QJPC: Options", options);
 
     //get the iframe DOM element and only this element holds the page html for printing
     const previewFrame = this.element.querySelector(".qjpc-print-preview-frame");
@@ -134,6 +148,7 @@ export default class PrintPopup extends ApplicationV2 {
     const baseHref = escapeHtml(document.baseURI || window.location.href);
 
     // Capture system themes, dark/light modes, and system definitions (e.g., "dnd5e", "theme-dark")
+    // the classes are added but css is not yet working satisfactory on this
     const systemClasses = escapeHtml(document.body.className);
 
     return `<!doctype html>
@@ -148,75 +163,31 @@ export default class PrintPopup extends ApplicationV2 {
   ${this.#userStyleTag()}
 </head>
 <body class="${systemClasses}">
-  <main class="qjpc-print-document journal-entry-pages journal-entry-page prose">
+  <main class="qjpc-print-document journal-entry-pages journal-entry-page">
     ${this.#bodyContent()}
   </main>
 </body>
 </html>`;
-
-    /*
-    const title = escapeHtml(game.i18n.localize("QJPC.windows.printPreview"));
-    const baseHref = escapeHtml(document.baseURI || window.location.href);
-    //console.log("QJPC: Baseref ", baseHref)
-    return `<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="${baseHref}">
-  <title>${title}</title>
-  ${this.#styleLinks()}
-  <style>${this.#basePrintCss()}</style>
-  ${this.#userStyleTag()}
-</head>
-<body>
-  <main class="qjpc-print-document">
-    ${this.#bodyContent()}
-  </main>
-</body>
-</html>`; */
   }
 
   // Functions to build the print document
 
   #styleLinks() {
-
-    // Grab all active stylesheet links currently loaded in Foundry
-    const links = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
-
-    return links
-      .map(link => {
-        const href = link.getAttribute("href");
-        return `<link rel="stylesheet" href="${escapeHtml(href)}">`;
-      })
-      .join("\n  ");
-
-    //const urls = this.pluginSettings.cssUrls ?? this.pluginSettings.cssFiles ?? [];
-    //const urlList = Array.isArray(urls) ? urls : [urls];
-    //console.log("QJPC: urllist ", urlList)
-    //return urlList
-    // .filter(Boolean)
-    // .map(url => `<link rel="stylesheet" href="${escapeHtml(url)}">`)
-    // .join("\n  ");
+    return ""
+    //Keeping it for now as a reminder for additional css informations passed as links/paths
   }
 
+
   #basePrintCss() {
+    /*Class structure
+  qjpc-print-modal
+  qjpc-print-preview-Shell
+  qjpc-print-preview-frame
+  qjpc-print-document
+    */
     return `
 @page {
-  margin: 15mm;
-}
-
-/* ==========================================================================
-   1. SCREEN PREVIEW RESETS (Brings back your scrollbars)
-   ========================================================================== */
-html,
-body {
-  background: #ffffff;
-  color: #111111;
-  /* Force the main iframe boundaries to allow natural browser scrolling */
-  overflow-y: auto !important;
-  overflow-x: auto !important;
-  height: 100% !important;
+  margin: 5mm;
 }
 
 body {
@@ -224,26 +195,17 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 11pt;
   line-height: 1.45;
-}
-
-/* Smash Foundry's app layouts back into standard article blocks for preview */
-.journal-entry-pages,
-.journal-entry-page,
-.prose,
-.qjpc-print-document {
-  display: block !important;
-  height: auto !important;
-  min-height: auto !important;
-  overflow: visible !important;
-  position: relative !important;
+  overflow: auto !important;
+  height: 100% !important;
+  width: 100% !important;
 }
 
 .qjpc-print-document {
+  /*includes padding and border into the content box*/
   box-sizing: border-box;
   width: 100%;
-  max-width: 190mm;
   margin: 0 auto;
-  padding: 12mm;
+  padding: 5mm;
 }
 
 .qjpc-print-plain {
@@ -268,10 +230,10 @@ thead {
 }
 
 /* ==========================================================================
-   2. PRINT ENGINE RESETS (Fixes the 1-page cutoff bug)
+   Print settings
    ========================================================================== */
 @media print {
-  /* Kill ALL height restrictions, absolute positions, and flex properties */
+ 
   html, 
   body, 
   .journal-entry-pages, 
@@ -286,7 +248,7 @@ thead {
     display: block !important; 
   }
 
-  /* Force colors to print */
+  /* Force colors to print --> This is probably the most important part*/
   body, .qjpc-print-document {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -302,176 +264,18 @@ thead {
   tr { display: table-row !important; break-inside: avoid !important; }
   td, th { display: table-cell !important; }
 
-  img, figure {
+  img {
     break-inside: avoid !important;
   }
 
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5, h6 {
     break-after: avoid !important;
   }
 }
 `;
   }
 
-  #basePrintCssB() {
-    return `
-@page {
-  margin: 15mm;
-}
 
-/* 1. OVERRIDE FOUNDRY'S OVERFLOW HIDDEN CLOSURES */
-html,
-body {
-  background: #ffffff;
-  color: #111111;
-  overflow: auto !important;  /* Forces scrollbars back on for screen preview */
-  height: auto !important;    /* Allows the body to expand naturally with content */
-}
-
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 11pt;
-  line-height: 1.45;
-}
-
-/* 2. LAYOUT CONFIGURATION */
-.qjpc-print-document {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 190mm;
-  margin: 0 auto;
-  padding: 12mm;
-}
-
-.qjpc-print-plain {
-  margin: 0;
-  white-space: pre-wrap;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* 3. ASSET HANDLING */
-img,
-svg,
-canvas,
-video {
-  max-width: 100%;
-  height: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  display: table-header-group;
-}
-
-/* 4. PRINT SPECIFIC OPTIMIZATIONS */
-@media print {
-  html, body {
-    overflow: visible !important; /* Ensure the print engine sees everything */
-  }
-
-  .qjpc-print-document {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    max-width: none;
-    padding: 0;
-  }
-
-  tr, img, figure {
-    break-inside: avoid;
-  }
-
-  h1, h2, h3, h4 {
-    break-after: avoid;
-  }
-}
-`;
-  }
-
-  //TODO: How to get the  styles to
-  #basePrintCss2() {
-    return `
-@page 
-{
-  margin: 15mm;
-}
-
-html,
-body {
-  background: #ffffff;
-  color: #111111;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 11pt;
-  line-height: 1.45;
-}
-
-.qjpc-print-document {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 190mm;
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 12mm;
-  background: #0eeb19ff;
-  color: #111111;
-}
-
-.qjpc-print-plain {
-  margin: 0;
-  white-space: pre-wrap;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-img,
-svg,
-canvas,
-video {
-  max-width: 100%;
-  height: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  display: table-header-group;
-}
-
-tr,
-img {
-  break-inside: avoid;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  break-after: avoid;
-  }
-
-/*This is the print css*/
-@media print {
- .qjpc-print-document {
-  -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    max-width: none;
-    min-height: auto;
-    padding: 0;
-    background: blue;
-  }
-}
-`;
-  }
 
   #userStyleTag() {
     const css = cleanStyleText(this.pluginSettings.css);

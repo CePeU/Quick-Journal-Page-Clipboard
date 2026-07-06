@@ -17,7 +17,7 @@ export function createSettings() {
       toFile: game.i18n.localize("QJPC.settings.channelFile.name"),
       toPrinter: game.i18n.localize("QJPC.settings.channelPrint.name")
     },
-    default: game.i18n.localize("QJPC.settings.channelClipboard.name"),
+    default: "clipboard",
     restricted: false
   });
 
@@ -102,7 +102,7 @@ export function createSettings() {
       markdown: game.i18n.localize("QJPC.settings.returnMDtext.name"),
       html: game.i18n.localize("QJPC.settings.returnHTMLtext.name")
     },
-    default: game.i18n.localize("QJPC.settings.plaintext.name"),
+    default: "plaintext",
     restricted: false
   });
 
@@ -219,7 +219,7 @@ export function createSettings() {
 
 
 // Create a Mixin Base class with generalized methods for all derived classes/modals
-// This is overengineered but a good test example
+// This is overengineered but is/was a good test example for me
 class SettingsApplicationV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   //https://foundryvtt.wiki/en/development/api/applicationv2
   static DEFAULT_OPTIONS = {
@@ -379,10 +379,6 @@ export function getSettings() {
   const isToPrinter = radioButtonChannel === "toPrinter";
   const isToFile = radioButtonChannel === "toFile";
   let isClipboard = radioButtonChannel === "clipboard";
-
-  //On first install if no settings have been saved then the dropdown has only false values as none was selected and saved
-  //TOD: check if a default can be initialized?
-  if (!isClipboard && !isToFile && !isToPrinter) { isClipboard = true }
 
   const settings =
   {
