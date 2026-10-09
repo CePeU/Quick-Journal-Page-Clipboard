@@ -1,3 +1,13 @@
+## [1.2.2] / 2026-10-09
+### Added
+### Fixed
+- Workflow yaml did not grab templates in template directory. Fixed workflow
+### Changed
+### Technical 
+### Removed
+### Deprecated
+### Security
+
 ## [1.2.1] / 2026-07-06
 ### Added
 - feature creep see CHANGELOG 1.1.0 and 1.2.0 
