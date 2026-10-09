@@ -33,7 +33,7 @@ jobs:
           cp ./scripts/lib/*.js ./quick-journal-page-clipboard/scripts/lib
           cp ./styles/*.css ./quick-journal-page-clipboard/styles
           cp ./lang/*.json ./quick-journal-page-clipboard/lang/
-          cp ./templates/*.json ./quick-journal-page-clipboard/templates/
+          cp ./templates/*.hbs ./quick-journal-page-clipboard/templates/
           zip -r quick-journal-page-clipboard.zip quick-journal-page-clipboard
 
       - name: Create release
