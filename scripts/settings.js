@@ -35,7 +35,7 @@ export function createSettings() {
     name: game.i18n.localize("QJPC.settings.removeGMSecrets.name"),
     hint: game.i18n.localize("QJPC.settings.removeGMSecrets.hint"),
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: true,
     restricted: true
@@ -45,7 +45,7 @@ export function createSettings() {
     name: game.i18n.localize("QJPC.settings.secretsForGM.name"),
     hint: game.i18n.localize("QJPC.settings.secretsForGM.hint"),
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: false,
     restricted: true
@@ -55,7 +55,7 @@ export function createSettings() {
     name: game.i18n.localize("QJPC.settings.allowLimited.name"),
     hint: game.i18n.localize("QJPC.settings.allowLimited.hint"),
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: false,
     restricted: true
