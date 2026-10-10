@@ -1,3 +1,13 @@
+## [1.2.4] / 2026-10-10
+### Added
+### Fixed
+- Added missing localization for Markdown and HTML Settings
+### Changed
+### Technical 
+### Removed
+### Deprecated
+### Security
+
 ## [1.2.3] / 2026-10-10
 ### Added
 ### Fixed
