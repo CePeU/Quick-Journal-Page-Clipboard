@@ -149,6 +149,41 @@ Hooks.once("init", () => {
   console.log("QJPC: Module Quick-Journal-Page-Clippboard has started")
 });
 
+//re register the GM specific settings so the config property which shows the setting in the settings list is only true for GM
+// during init phase game.user.isGM is not yet available and thus undefined
+// could be refactored so settings are split according if they are needed in the init phase or ready phase
+Hooks.once("ready", () => {
+  game.settings.register(MODULE_ID, "removeGMSecrets", {
+    name: game.i18n.localize("QJPC.settings.removeGMSecrets.name"),
+    hint: game.i18n.localize("QJPC.settings.removeGMSecrets.hint"),
+    scope: "world",
+    config: game.user.isGM,
+    type: Boolean,
+    default: true,
+    restricted: true
+  });
+
+  game.settings.register(MODULE_ID, "secretsForGM", {
+    name: game.i18n.localize("QJPC.settings.secretsForGM.name"),
+    hint: game.i18n.localize("QJPC.settings.secretsForGM.hint"),
+    scope: "world",
+    config: game.user.isGM,
+    type: Boolean,
+    default: false,
+    restricted: true
+  });
+
+  game.settings.register(MODULE_ID, "allowExportForLimitedUserRights", {
+    name: game.i18n.localize("QJPC.settings.allowLimited.name"),
+    hint: game.i18n.localize("QJPC.settings.allowLimited.hint"),
+    scope: "world",
+    config: game.user.isGM,
+    type: Boolean,
+    default: false,
+    restricted: true
+  });
+});
+
 
 //Installs a menue option in the header of Journal entries into the 3 point menue
 Hooks.on("getHeaderControlsJournalEntrySheet", (sheet, buttons) => {
