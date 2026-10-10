@@ -198,18 +198,18 @@ export function createSettings() {
   });
 
   game.settings.registerMenu(MODULE_ID, "markdownSettings", {
-    name: "Markdown Settings",
-    label: "Markdown Settings",
-    hint: "Configure additonal Markdown export settings.",
+    name: game.i18n.localize("QJPC.settings.markdownSettings.name"),
+    label: game.i18n.localize("QJPC.settings.markdownSettings.label"),
+    hint: game.i18n.localize("QJPC.settings.markdownSettings.hint"),
     icon: "fas fa-list",
     type: MarkdownOptions,
     restricted: false
   });
 
   game.settings.registerMenu(MODULE_ID, "htmlSettings", {
-    name: "HTML Settings",
-    label: "Html Settings",
-    hint: "Configure additional HTML export settings.",
+    name: game.i18n.localize("QJPC.settings.htmlSettings.name"),
+    label: game.i18n.localize("QJPC.settings.htmlSettings.label"),
+    hint: game.i18n.localize("QJPC.settings.htmlSettings.hint"),
     icon: "fas fa-list",
     type: HtmlOptions,
     restricted: false
