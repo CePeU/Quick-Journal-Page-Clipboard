@@ -80,6 +80,16 @@
         "name": "Exportiere Bilder im HTML",
         "hint": "Exportiere Bilder als base64 encodierten Datenblock im html. Solange diese Option gesetzt ist werden keine Pfade ersetzt, sondern die Bild URL komplett ersetzt."
       },
+      "markdownSettings": {
+        "name": "Markdown Einstellungen",
+        "label":"Markdown Einstellungen",
+        "hint": "Zusätzliche Markdown spezifische export Einstellungen."
+      },
+      "htmlSettings": {
+        "name": "HTML Einstellungen",
+        "label":"HTML Einstellungen",
+        "hint": "Zusätzliche HTML spezifische export Einstellungen."
+      },
       "outputChannel": {
         "name": "Export Ziel",
         "hint": "Wohin soll der Export stattfinden. Standard ist die Zwischenablage."
