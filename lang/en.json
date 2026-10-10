@@ -80,6 +80,16 @@
         "name": "Export pictures in HTML",
         "hint": "Export pictures as base64 encoded data included as inline html. As long as this option is set no URL adjusment will be made. Instead the whole picture URL will be replaced by the picture."
       },
+      "markdownSettings": {
+        "name": "Markdown Settings",
+        "label":"Markdown Settings",
+        "hint": "Configure additonal Markdown export settings."
+      },
+      "htmlSettings": {
+        "name": "HTML Settings",
+        "label":"HTML Settings",
+        "hint": "Configure additional HTML export settings."
+      },
       "outputChannel": {
         "name": "Export Destination",
         "hint": "To which destination the exportet text shall be exported to. Standard is the clipboard."
