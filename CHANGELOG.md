@@ -1,3 +1,14 @@
+## [1.2.3] / 2026-10-10
+### Added
+### Fixed
+- Setting entries for seecrets should only be accessible by GM. Now they are hidden from non GM users. The settings property "restricted" still is governed by the trust level applied in the user management.
+  a Trusted Player with the ability to save settings could theoretical still change those settings by macro code. But they are now at least hidden from him. 
+### Changed
+### Technical 
+### Removed
+### Deprecated
+### Security
+
 ## [1.2.2] / 2026-10-09
 ### Added
 ### Fixed
